@@ -1,0 +1,79 @@
+data:
+  tables:
+    - tablename: sensordata
+      columns:
+        - id: tsp # This column (with id: tsp) is mandatory!
+          name: Timestamp
+          description: Timestamp of Measurement
+          path: args[0].tsp
+          dataType: timestamp #mandatory
+        - id: temp1
+          name: Temperature
+          description: Temperature from DHT11 Sensor in Celcius
+          path: args[0].temperature
+          dataType: numeric  # possible values: string, numeric, boolean, timestamp
+        - id: humidity
+          name: Humidity
+          description: Humidity from DHT11 Sensor in %
+          path: args[0].humidity
+          dataType: numeric
+        - id: devname
+          name: Device Name
+          description: Name of Device
+          path: kwargs.DEVICE_NAME
+          dataType: string
+
+    - tablename: geodata
+      columns:
+        - id: tsp # This column (with id: tsp) is mandatory!
+          name: Timestamp
+          description: Timestamp of Measurement
+          path: args[0].tsp
+          dataType: timestamp #mandatory
+        - id: lon
+          name: Longitude
+          description: Longitude of device position
+          path: args[0].lon
+          dataType: numeric
+        - id: lat
+          name: Latitude
+          description: Latitude of device position
+          path: args[0].lat
+          dataType: numeric
+        - id: devname
+          name: Device Name
+          description: Name of Device
+          path: kwargs.DEVICE_NAME
+          dataType: string
+
+  transforms:
+    - tablename: myagg
+      materialize: true
+      schedule: "* * * * *" # crontab interface: Minute(1-60) Hour(1-24) MonthDay(1-31) Month(1-12) WeekDay(1-7)
+      sql: |
+        SELECT
+          time_bucket('1 day', tsp) AS daybucket, 
+          max(temp1) AS max_temp,
+          avg(temp1) AS avg_temp, 
+          min(temp1) AS min_temp 
+        FROM 
+          sensordata
+        WHERE 
+          tsp > now() - INTERVAL '7 days'
+        GROUP BY
+          daybucket
+        ORDER BY 
+          daybucket desc
+      columns:
+        - id: max_temp
+          name: Maximum Temperature
+          description: Maximum Temperature of DHT11 Sensor in Celcius
+          dataType: numeric # (string, numeric, boolean, timestamp)
+        - id: avg_temp
+          name: Average Temperature
+          description: Average Temperature of DHT11 Sensor in Celcius
+          dataType: numeric
+        - id: min_temp
+          name: Minimum Temperature
+          description: Minimum Temperature of DHT11 Sensor in Celcius
+          dataType: numeric

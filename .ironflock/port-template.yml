@@ -1,0 +1,31 @@
+############################################################
+# Sample Ports Template for Remote Access Configuration
+#
+# This template allows you to describe ports your app serves content on or where your app listens to connections. 
+# Your app could serve a web site with a user interface or offer a video stream, screen sharing, ssh access, VPN, or any other service to users.
+# When a user starts the app on his/her device, these services can be accessed only if users are in the same network as the device.
+# This rarely is the case because the device is inside a private network in almost all cases. 
+# The Record Evolution platform provides a secure tunneling system, that can be used to enable access to the these services from remote.
+# In this template you describe all necessary information for the IronFlock tunneling system to provide remote access to this app on an individual device.
+# 
+# Enabling or disabling remote access to a running app on a device is however controlled by a user with administrative privileges on his/her device!
+# I.e. describing the service ports here does not open any remote access to any device. It just enables users to do so.
+#
+# Note: 
+# - Ports can potentially conflict with ports of other apps on the same device. It is advised to use random ports to avoid conflicts.
+# - If http is served on a port the tunnel will still serve https as remote access protocoll. i.e. outside communication will automatically be secured with TLS certificates.
+# - Websocket can be served as well when using http or https protocols.
+# - Sometimes the app needs to know the endpoint port number the tunnel uses to serve remote access. If you provide an environment variable in the "remote_port_environment" property
+#   then this number will be provided to the app in this variable. (TCP and UDP only)
+############################################################
+
+
+ports:
+  - name: Web interface       # Label of the port in the device's app settings
+    port: 19999               # Port under which a web server provides a user interface
+    main: true                # If "true", this is the port that is used for quick-access. i.e. the remote web interface is opened in a seperate browser window when clicking on the app icon on a device.
+  - name: Video Stream
+    port: 4443
+    protocol: tcp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
+                              # The given protocol here describes the protocol your app serves, not the protocol that is served on the remote tunnel endpoint.
+    remote_port_environment: REMOTE_VIDEO_PORT_NUMBER # Defines the environment variable name in which the remote port number will be stored (TCP and UDP only)

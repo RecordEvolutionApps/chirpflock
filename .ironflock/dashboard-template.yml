@@ -1,0 +1,384 @@
+name: gogo
+style:
+  background_color: "#dbe1f2"
+  text_color: "#5a6666"
+layout:
+  - w: 3
+    h: 4
+    x: 0
+    y: 0
+    id: 7
+  - w: 4
+    h: 3
+    x: 3
+    y: 0
+    id: 0
+  - w: 5
+    h: 3
+    x: 7
+    y: 0
+    id: 2
+  - w: 9
+    h: 3
+    x: 3
+    y: 3
+    id: 1
+  - w: 3
+    h: 2
+    x: 0
+    y: 4
+    id: 4
+  - w: 7
+    h: 4
+    x: 0
+    y: 6
+    id: 8
+  - w: 5
+    h: 4
+    x: 7
+    y: 6
+    id: 5
+  - w: 12
+    h: 4
+    x: 0
+    y: 10
+    id: 6
+widgets:
+  - package_name: widget-gauge
+    version: 1.6.9
+    chartconfig:
+      dataseries:
+        - label: $str:Temperature
+          unit: $str:°C
+          valueColor: $str:#233543
+          sections:
+            sectionLimits:
+              - $num:-20
+              - $num:20
+              - $num:80
+              - $num:120
+            backgroundColors:
+              - $str:#aac8a7
+              - $str:#f1c27b
+              - $str:#ff9b9b
+          advanced:
+            averageLatest: $num:1
+          data:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format:
+                value: temp1
+                pivot: devname
+    layout_id: 0
+  - package_name: widget-linechart
+    version: 1.5.5
+    chartconfig:
+      axis:
+        timeseries: $bool:true
+        yAxisLabel: $str:Temperature
+        xAxisLabel: $str:Time
+      dataseries:
+        - label: $str:Temperature
+          type: $str:line
+          backgroundColor: $str:#e15656
+          borderColor: $str:#ff9b9b
+          styling:
+            radius: $num:2
+            pointStyle: $str:rectRounded
+            borderWidth: $num:2
+            fill: $bool:false
+          advanced:
+            chartName: $str:test#split#
+          data:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 1000
+                windowPeriod: minute
+                windowLength: 5
+                nowMinusPeriods: 0
+              format:
+                x: tsp
+                y: temp1
+        - label: $str:Humidity
+          type: $str:line
+          backgroundColor: $str:#5898d0
+          borderColor: $str:#96caf8
+          styling:
+            pointStyle: $str:rectRounded
+            radius: $num:2
+            borderWidth: $num:2
+            fill: $bool:false
+          advanced:
+            chartName: $str:test#split#
+          data:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 1000
+                windowPeriod: minute
+                windowLength: 5
+                nowMinusPeriods: 0
+              format:
+                x: tsp
+                y: humidity
+    layout_id: 1
+  - package_name: widget-doughnut
+    version: 1.5.5
+    chartconfig:
+      title: $str:Doughnut Chart
+      columnLayout: $bool:false
+      dataseries:
+        - label: $str:Doughnut 1
+          settings:
+            cutout: $str:20%
+            averageLatest: $num:1
+          sections:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format:
+                - name: $str:Devices Online
+                  pivot: devname
+                  value: temp1
+                  color: $str:#aac8a7
+                - name: $str:Devices Offline
+                  pivot: devname
+                  value: humidity
+                  color: $str:#ff9b9b
+                - name: $str:Devices Unknown
+                  pivot: devname
+                  value: $num:4
+                  color: $str:#96caf8
+    layout_id: 2
+  - package_name: widget-value
+    version: 1.1.6
+    chartconfig:
+      dataseries:
+        - label: $str:Temperature
+          unit: $str:°C
+          styling:
+            valueColor: $str:black
+            labelColor: $str:black
+          advanced:
+            averageLatest: $num:1
+          data:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format:
+                value: temp1
+                pivot: devname
+        - label: $str:Humidity
+          unit: $str:%
+          styling:
+            valueColor: $str:black
+            labelColor: $str:black
+          advanced:
+            averageLatest: $num:1
+          data:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format:
+                value: humidity
+                pivot: devname
+    layout_id: 4
+  - package_name: widget-barchart
+    version: 1.5.3
+    chartconfig:
+      axis:
+        horizontal: $bool:true
+      dataseries:
+        - label: $str:Bar Series
+          borderColor: $str:#6e9a69
+          backgroundColor: $str:#aac8a7
+          styling:
+            borderWidth: $num:2
+            borderRadius: $num:4
+          advanced:
+            stack: $str:max
+          data:
+            tableRef:
+              tablename: myagg
+              queryParams:
+                limit: 30
+              format:
+                x: $str:MaxTemp
+                y: max_temp
+        - label: $str:Min Temp
+          backgroundColor: $str:#f1c27b
+          borderColor: $str:#dd9e46
+          styling:
+            borderWidth: $num:2
+            borderRadius: $num:4
+          advanced:
+            stack: $str:min
+          data:
+            tableRef:
+              tablename: myagg
+              queryParams:
+                limit: 30
+              format:
+                x: $str:MinTemp
+                y: min_temp
+        - label: $str:Avg Temp
+          backgroundColor: $str:#ff9b9b
+          borderColor: $str:#e15656
+          styling:
+            borderWidth: $num:2
+            borderRadius: $num:4
+          advanced:
+            stack: $str:avg
+          data:
+            tableRef:
+              tablename: myagg
+              queryParams:
+                limit: 30
+              format:
+                x: $str:AvgTemp
+                y: avg_temp
+    layout_id: 5
+  - package_name: widget-mapbox
+    version: 1.5.3
+    chartconfig:
+      title: $str:Map Example
+      style: $str:light-v11
+      showLegend: $bool:true
+      follow: $bool:false
+      dataseries:
+        - label: $str:Circles
+          type: $str:circle
+          color: $str:#96caf8
+          latestValues: $num:10
+          config:
+            circle:
+              circle-blur: $num:0.2
+              circle-opacity: $num:0.8
+            symbol:
+              text-color: $str:black
+              text-size: $num:14
+          data:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format:
+                lon: $num:8.68417
+                lat: $num:50.11552
+                value: temp1
+                pivot: devname
+        - label: $str:Tracks
+          type: $str:line
+          color: $str:#aac8a7
+          latestValues: $num:40
+          config:
+            line:
+              line-width: $num:2
+            symbol:
+              icon-image: $str:car-front
+              icon-size: $num:1
+          data:
+            tableRef:
+              tablename: geodata
+              queryParams:
+                limit: 150
+              format:
+                lon: lon
+                lat: lat
+                pivot: devname
+    layout_id: 6
+  - package_name: widget-image
+    version: 1.1.3
+    chartconfig:
+      title:
+        text:
+          valueRef:
+            tablename: sensordata
+            column: devname
+      imageLink: $str:https://res.cloudinary.com/dotw7ar1m/image/upload/c_scale,h_450/v1705171827/markope._self-contained_full_view_of_an_industrial_machine_mode_a9355fbe-d5b5-4ffb-abf3-8027d4edd5fb.png
+    layout_id: 7
+  - package_name: widget-table
+    version: 1.1.4
+    chartconfig:
+      styling:
+        headerFontSize: $str:16px
+        headerBackground: $str:#ddd
+        rowHeight: $str:40px
+      columns:
+        - header: $str:Image
+          width: $str:120px
+          type: $str:image
+          values:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format: $str:https://storage.googleapis.com/reswarm-images/mir-200.png
+        - header: $str:Device Name
+          width: $str:220px
+          type: $str:string
+          fontSize: $str:14px
+          values:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format: devname
+        - header: $str:Timestamp
+          width: $str:80px
+          fontSize: $str:14px
+          type: $str:string
+          values:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format: tsp
+        - header: $str:Temperatur
+          columnWidth: $str:80px
+          type: $str:number
+          fontWeight: $num:400
+          precision: $num:2
+          values:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format: temp1
+        - header: $str:Humidity
+          columnWidth: $str:80px
+          type: $str:number
+          fontWeight: $num:400
+          precision: $num:2
+          values:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format: humidity
+        - header: $str:Bool
+          width: $str:20px
+          type: $str:boolean
+          values:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format: $bool:bool
+        - header: $str:Link
+          width: $str:120px
+          type: $str:button
+          label: $str:Details
+          values:
+            tableRef:
+              tablename: sensordata
+              queryParams:
+                limit: 20
+              format: $str:https://google.com
+    layout_id: 8

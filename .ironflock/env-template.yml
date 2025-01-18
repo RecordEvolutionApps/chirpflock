@@ -1,0 +1,56 @@
+############################################################
+# Sample Environment Variable Template
+# 
+# In this template you can describe a form to be displayed to users in the app settings on device or group level.
+# Users can enter values into this form that will be mapped to environment variables
+# that are passed to the container when it is started.
+# The root properties below will be the names of the environment variables.
+# When users provide values to this form on device group level, then these will be
+# applied to the apps on all devices in this group. This effectively allows users to mass-configure devices.
+# This mass-configuration feature can not be provided by your app with an individual web based user-interface.
+# 
+# Notes:
+# - Apps can integrate with other systems like AWS or SAP, ... This usually requires users to provide secret keys
+#   to authenticate and authorize access to these systems. To enable users to securely enter these keys
+#   you can mark a variable as "secret: true". The user given value will then be masked, 
+#   stored securely and will subsequently never be provided to the browser frontend.
+# - Values that users provide in the form on device level override settings that users provide on group level.
+############################################################
+
+SPEED:                                      # The name of the environment variable that contains the user provided value
+    label: Speed                            # Required! Label displayed above the input field. (string) 
+    type: numeric                           # Required! Type of value. Possible values are 'numeric' | 'text' | 'textarea' | 'boolean' 
+    defaultValue: 1000                      # Default value. (string | number)
+    description: Numeric field example      # Description. (string)
+    unit: km/h                              # Unit displayed next to the label. (string)
+    max: 4000                               # Maximum allowed value. Only makes sense with 'numeric' type. (number)
+    min: 500                                # Minimum allowed value. Only makes sense with 'numeric' type. (number)
+    secret: false                           # Maskes the value once set. (boolean)
+SENSITIVITY:
+    label: Sensitivity
+    type: numeric
+    defaultValue: 600
+    description: Dropdown Example
+    valueList: [500, 600, 800, 2000, 4000]  # Renders a dropdown field allowing the selection from a list of values.  (number[] | string[])
+MY_CONFIG:
+    label: Service config yaml
+    type: textarea                          # Renders a text area with multiple lines
+    description: Text Area Example
+    defaultValue: |
+        this:
+            can:
+                - be
+                - any
+                - yaml
+        or: any
+        other: config
+PASSWORD:
+    label: Password
+    type: text
+    description: Secret input example
+    secret: true
+ENABLED:                                    # The provided values in this env variable will be 'true' or 'false'
+    label: Radio Options True / False
+    type: boolean                           # Renders Radio Options
+    defaultValue: false
+    description: Checkbox example
