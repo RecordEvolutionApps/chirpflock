@@ -22,10 +22,17 @@
 
 ports:
   - name: Web interface       # Label of the port in the device's app settings
-    port: 19999               # Port under which a web server provides a user interface
+    port: 8080               # Port under which a web server provides a user interface
     main: true                # If "true", this is the port that is used for quick-access. i.e. the remote web interface is opened in a seperate browser window when clicking on the app icon on a device.
-  - name: Video Stream
-    port: 4443
-    protocol: tcp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
-                              # The given protocol here describes the protocol your app serves, not the protocol that is served on the remote tunnel endpoint.
-    remote_port_environment: REMOTE_VIDEO_PORT_NUMBER # Defines the environment variable name in which the remote port number will be stored (TCP and UDP only)
+  - name: Gateways
+    port: 1700
+    protocol: udp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
+    remote_port_environment: REMOTE_GATEWAY_PORT_NUMBER # Defines the environment variable name in which the remote port number will be stored (TCP and UDP only)
+  - name: MQTT
+    port: 1883
+    protocol: http             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
+    remote_port_environment: REMOTE_MQTT_PORT_NUMBER # Defines the environment variable name in which the remote port number will be stored (TCP and UDP only)
+  - name: gRPC
+    port: 8000
+    protocol: http
+    remote_port_environment: REMOTE_GRPC_PORT_NUMBER

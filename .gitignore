@@ -1,6 +1,3 @@
-# hidden files, exluding gitattributes
-.*
-!.gitattributes
 
 # data folder
 /data
