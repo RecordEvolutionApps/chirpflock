@@ -51,11 +51,11 @@ services:
       - chirpstack
 
   postgres:
-    image: postgres:14-alpine
+    image: postgres:17-alpine
     restart: unless-stopped
     volumes:
       - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
-      - postgresqldata:/var/lib/postgresql/data
+      - postgresqldata2:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=chirpstack
       - POSTGRES_PASSWORD=chirpstack
@@ -77,5 +77,5 @@ services:
       - ./configuration/mosquitto/config/:/mosquitto/config/
 
 volumes:
-  postgresqldata:
+  postgresqldata2:
   redisdata:
