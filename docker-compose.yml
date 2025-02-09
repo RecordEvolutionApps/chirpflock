@@ -1,3 +1,4 @@
+
 services:
   chirpstack:
     image: chirpstack/chirpstack:4
@@ -10,9 +11,9 @@ services:
       - mosquitto
       - redis
     environment:
-      - MQTT_BROKER_HOST=mosquitto
-      - REDIS_HOST=redis
-      - POSTGRESQL_HOST=postgres
+      - MQTT_BROKER_HOST=mosquitto  # Use service name
+      - REDIS_HOST=redis            # Use service name
+      - POSTGRESQL_HOST=postgres    # Use service name
     ports:
       - "8080:8080"
 
@@ -24,12 +25,13 @@ services:
     volumes:
       - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
     environment:
+      - INTEGRATION__MQTT__SERVER=mosquitto:1883  # Use service name
       - INTEGRATION__MQTT__EVENT_TOPIC_TEMPLATE=eu868/gateway/{{ .GatewayID }}/event/{{ .EventType }}
       - INTEGRATION__MQTT__STATE_TOPIC_TEMPLATE=eu868/gateway/{{ .GatewayID }}/state/{{ .StateType }}
       - INTEGRATION__MQTT__COMMAND_TOPIC_TEMPLATE=eu868/gateway/{{ .GatewayID }}/command/#
     depends_on:
       - mosquitto
-  
+
   chirpstack-gateway-bridge-basicstation:
     image: chirpstack/chirpstack-gateway-bridge:4
     restart: unless-stopped
@@ -38,13 +40,15 @@ services:
       - "3001:3001"
     volumes:
       - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
+    environment:
+      - INTEGRATION__MQTT__SERVER=mosquitto:1883  # Use service name
     depends_on:
       - mosquitto
 
   chirpstack-rest-api:
     image: chirpstack/chirpstack-rest-api:4
     restart: unless-stopped
-    command: --server chirpstack:8080 --bind 0.0.0.0:8090 --insecure
+    command: --server chirpstack:8080 --bind 0.0.0.0:8090 --insecure  # Use service name
     ports:
       - "8090:8090"
     depends_on:
@@ -73,7 +77,7 @@ services:
     restart: unless-stopped
     ports:
       - "1883:1883"
-    volumes: 
+    volumes:
       - ./configuration/mosquitto/config/:/mosquitto/config/
 
 volumes:
