@@ -1,11 +1,13 @@
 
 services:
   chirpstack:
-    image: chirpstack/chirpstack:4
+    # image: chirpstack/chirpstack:4
+    build: 
+      context: configuration/chirpstack
     command: -c /etc/chirpstack
     restart: unless-stopped
-    volumes:
-      - ./configuration/chirpstack:/etc/chirpstack
+    # volumes:
+    #   - ./configuration/chirpstack:/etc/chirpstack
     depends_on:
       - postgres
       - mosquitto
@@ -18,12 +20,14 @@ services:
       - "8080:8080"
 
   chirpstack-gateway-bridge:
-    image: chirpstack/chirpstack-gateway-bridge:4
+    # image: chirpstack/chirpstack-gateway-bridge:4
+    build: 
+      context: configuration/chirpstack-gateway-bridge
     restart: unless-stopped
     ports:
       - "1700:1700/udp"
-    volumes:
-      - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
+    # volumes:
+    #   - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
     environment:
       - INTEGRATION__MQTT__SERVER=mosquitto:1883  # Use service name
       - INTEGRATION__MQTT__EVENT_TOPIC_TEMPLATE=eu868/gateway/{{ .GatewayID }}/event/{{ .EventType }}
@@ -33,13 +37,15 @@ services:
       - mosquitto
 
   chirpstack-gateway-bridge-basicstation:
-    image: chirpstack/chirpstack-gateway-bridge:4
+    # image: chirpstack/chirpstack-gateway-bridge:4
+    build: 
+      context: configuration/chirpstack-gateway-bridge
     restart: unless-stopped
     command: -c /etc/chirpstack-gateway-bridge/chirpstack-gateway-bridge-basicstation-eu868.toml
     ports:
       - "3001:3001"
-    volumes:
-      - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
+    # volumes:
+    #   - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
     environment:
       - INTEGRATION__MQTT__SERVER=mosquitto:1883  # Use service name
     depends_on:
@@ -55,10 +61,12 @@ services:
       - chirpstack
 
   postgres:
-    image: postgres:14-alpine
+    # image: postgres:14-alpine
+    build: 
+      context: configuration/postgresql
     restart: unless-stopped
     volumes:
-      - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
+      # - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
       - postgresqldata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=chirpstack
@@ -73,12 +81,14 @@ services:
       - redisdata:/data
 
   mosquitto:
-    image: eclipse-mosquitto:2
+    # image: eclipse-mosquitto:2
+    build: 
+      context: configuration/mosquitto
     restart: unless-stopped
     ports:
       - "1883:1883"
-    volumes:
-      - ./configuration/mosquitto/config/:/mosquitto/config/
+    # volumes:
+    #   - ./configuration/mosquitto/config/:/mosquitto/config/
 
 volumes:
   postgresqldata:
