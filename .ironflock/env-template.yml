@@ -17,40 +17,14 @@
 # - Values that users provide in the form on device level override settings that users provide on group level.
 ############################################################
 
-SPEED:                                      # The name of the environment variable that contains the user provided value
-    label: Speed                            # Required! Label displayed above the input field. (string) 
-    type: numeric                           # Required! Type of value. Possible values are 'numeric' | 'text' | 'textarea' | 'boolean' 
-    defaultValue: 1000                      # Default value. (string | number)
-    description: Numeric field example      # Description. (string)
-    unit: km/h                              # Unit displayed next to the label. (string)
-    max: 4000                               # Maximum allowed value. Only makes sense with 'numeric' type. (number)
-    min: 500                                # Minimum allowed value. Only makes sense with 'numeric' type. (number)
-    secret: false                           # Maskes the value once set. (boolean)
-SENSITIVITY:
-    label: Sensitivity
-    type: numeric
-    defaultValue: 600
-    description: Dropdown Example
-    valueList: [500, 600, 800, 2000, 4000]  # Renders a dropdown field allowing the selection from a list of values.  (number[] | string[])
-MY_CONFIG:
-    label: Service config yaml
-    type: textarea                          # Renders a text area with multiple lines
-    description: Text Area Example
-    defaultValue: |
-        this:
-            can:
-                - be
-                - any
-                - yaml
-        or: any
-        other: config
-PASSWORD:
-    label: Password
+INITIAL_ADMIN_USER:                                      # The name of the environment variable that contains the user provided value
+    label: Initial admin user
+    type: text                      # Required! Type of value. Possible values are 'numeric' | 'text' | 'textarea' | 'boolean' 
+    defaultValue: admin
+    description: Initial admin user      # Description. (string)
+INITIAL_ADMIN_PASSWORD:
+    label: Initial Admin Password
     type: text
-    description: Secret input example
+    defaultValue: admin
+    description: May be changed later within the Chirpstack platform
     secret: true
-ENABLED:                                    # The provided values in this env variable will be 'true' or 'false'
-    label: Radio Options True / False
-    type: boolean                           # Renders Radio Options
-    defaultValue: false
-    description: Checkbox example
