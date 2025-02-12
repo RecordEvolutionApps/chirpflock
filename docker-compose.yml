@@ -4,7 +4,7 @@ services:
     # image: chirpstack/chirpstack:4
     build: 
       context: configuration/chirpstack
-    command: -c /etc/chirpstack
+    command: -c /etc/chirpstack import-legacy-lorawan-devices-repository -d /tmp/lorawan-devices
     restart: unless-stopped
     # volumes:
     #   - ./configuration/chirpstack:/etc/chirpstack
