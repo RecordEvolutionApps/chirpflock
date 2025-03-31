@@ -1,0 +1,115 @@
+############################################################
+# Sample Data Template
+#
+# In this template you can describe the structure of the cloud data storage that the app can use to collect data from devices.
+# You can define tables and their columns and you can additionally describe "transforms".
+# Transformes are basically TimescaleDB SQL statements that can use the data in the defined tables to create and store aggregates.
+# When a user installs this app on a device in his/her fleet, then these structures will be created in
+# a TimescaleDB database in the cloud that is private to that fleet.
+# To send data from a device to these tables in the cloud you can use the ironflock-py or ironflock-js libraries like this: 
+# rw.publish_to_table('mytablename', {tsp: '2024-01-01T00:00:00', temperature: '22'})
+# When you publish data to the table you are using a secure realm in the IronFlock WAMP Messaging Cluster that is private to the fleet.
+# The data that you publish is mapped to the individual columns using the path property in the column definitions.
+# Here the 'args' keyword represents the list of arguments following the tablename in the publish_to_table function. 
+############################################################
+
+data:
+  tables:
+    - tablename: sensordata
+      chunkTimeInterval: 1 hour
+      dropAfter: 7 days
+      columns:
+        - id: tsp
+          name: Timestamp
+          description: Timestamp when the uplink event was published.
+          path: args[0].publishedAt
+          dataType: timestamp
+        - id: dev_eui
+          name: Device EUI
+          description: Unique identifier of the LoRaWAN device.
+          path: args[0].devEUI
+          dataType: string
+        - id: f_port
+          name: FPort
+          description: LoRaWAN FPort used by the device.
+          path: args[0].fPort
+          dataType: numeric
+        - id: data
+          name: Data
+          description: Base64-decoded raw payload from the sensor.
+          path: args[0].data
+          dataType: string
+        - id: dr
+          name: Data Rate
+          description: LoRaWAN data rate used for the uplink.
+          path: args[0].dr
+          dataType: numeric
+        - id: adr
+          name: ADR Enabled
+          description: Indicates if Adaptive Data Rate (ADR) is enabled.
+          path: args[0].adr
+          dataType: boolean
+        - id: f_cnt
+          name: Frame Count
+          description: LoRaWAN frame counter.
+          path: args[0].fCnt
+          dataType: numeric
+        - id: rssi
+          name: RSSI
+          description: Received Signal Strength Indicator.
+          path: args[0].rxInfo[0].rssi # assumes first gateway
+          dataType: numeric
+        - id: snr
+          name: SNR
+          description: Signal-to-Noise Ratio.
+          path: args[0].rxInfo[0].snr # assumes first gateway
+          dataType: numeric
+        - id: confirmed_uplink
+          name: Confirmed Uplink
+          description: Indicates if the uplink was confirmed.
+          path: args[0].confirmedUplink
+          dataType: boolean
+        - id: object
+          name: Decoded Object
+          description: Decoded JSON object (if a codec is configured in the application).
+          path: args[0].object
+          dataType: string # you might want to use json, depending on your database.
+
+    - tablename: device_info
+      chunkTimeInterval: 1 week
+      columns:
+        - id: dev_eui
+          name: Device EUI
+          description: Unique identifier of the LoRaWAN device.
+          path: args[0].devEUI
+          dataType: string # Primary Key
+        - id: device_name
+          name: Device Name
+          description: Name of the LoRaWAN device.
+          path: args[0].deviceName
+          dataType: string
+        - id: application_id
+          name: Application ID
+          description: ID of the ChirpStack application.
+          path: args[0].applicationID
+          dataType: string
+        - id: application_name
+          name: Application Name
+          description: Name of the ChirpStack application.
+          path: args[0].applicationName
+          dataType: string
+        - id: dev_addr
+          name: Device Address
+          description: LoRaWAN device address.
+          path: args[0].devAddr
+          dataType: string
+        - id: gateway_id
+          name: Gateway ID
+          description: ID of the gateway that received the initial uplink.
+          path: args[0].rxInfo[0].gatewayID # assumes first gateway
+          dataType: string
+        - id: tags
+          name: Device Tags
+          description: Device tags.
+          path: args[0].tags
+          dataType: string # you might want to use json, depending on your database.

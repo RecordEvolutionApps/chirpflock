@@ -1,0 +1,13 @@
+# Use a Python base image (adjust version as needed)
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ironflock_publisher.py .
+
+CMD ["python", "-u", "ironflock_publisher.py"]

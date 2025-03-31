@@ -90,6 +90,17 @@ services:
     # volumes:
     #   - ./configuration/mosquitto/config/:/mosquitto/config/
 
+  ironflock_publisher:
+    # image: chirpstack/chirpstack:4
+    build: 
+      context: ironflock_publish
+    restart: unless-stopped
+    # volumes:
+    #   - ./configuration/chirpstack:/etc/chirpstack
+    depends_on:
+      - chirpstack
+      - mosquitto
+
 volumes:
   postgresqldata:
   redisdata:
