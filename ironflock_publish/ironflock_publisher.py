@@ -18,8 +18,7 @@ def on_connect(client, userdata, flags, rc, properties):
 def on_message(client, userdata, msg):
     try:
         data = json.loads(msg.payload.decode("utf-8"))
-        uplink_data = data["uplinkEvent"]
-        payload = transform_payload(uplink_data) #your transform payload function.
+        payload = transform_payload(data) #your transform payload function.
         ironflock.publish_to_table('sensordata', [payload])
 
     except Exception as e:
@@ -31,17 +30,17 @@ async def transform_payload(data):
     try:
         
         transformed_data = {
-            "publishedAt": data.get("publishedAt"),
+            "tsp": data.get("publishedAt"),
             "devEUI": data.get("devEUI"),
             "fPort": data.get("fPort"),
-            "data": base64.b64decode(data.get("data", "")).decode("utf-8") if data.get("data") else None, #decode base64
-            "dr": data.get("dr"),
+            "data": base64.b64decode(data.get("data", "")).decode("utf-8") if data.get("data") else None,  # Decode Base64
+            "dr": data.get("txInfo", {}).get("dr"),
             "adr": data.get("adr"),
             "fCnt": data.get("fCnt"),
             "rssi": data.get("rxInfo", [{}])[0].get("rssi"),
             "snr": data.get("rxInfo", [{}])[0].get("snr"),
             "confirmedUplink": data.get("confirmedUplink"),
-            "object": json.dumps(data.get("object")) if data.get("object") else None, #convert object to json string.
+            "object": json.dumps(data.get("object")) if data.get("object") else None,  # Convert object to JSON string
         }
 
         print("transformed data", transformed_data)
