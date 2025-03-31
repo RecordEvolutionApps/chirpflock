@@ -5,21 +5,23 @@ import struct
 import os
 from ironflock import IronFlock
 import paho.mqtt.client as mqtt
+from lora_device_simulator import simulate_device
 
 MQTT_BROKER = "mosquitto"
 MQTT_PORT = 1883
 APPLICATION_ID = os.environ.get('APPLICATION_ID', '')
+ENABLE_DEMO_DATA = (os.environ.get('ENABLE_DEMO_DATA', 'false') == 'true')
 
 def on_connect(client, userdata, flags, rc, properties):
     print(f"Connected with result code {rc}")
     # Subscribe to the uplink topic
     client.subscribe(f"application/{APPLICATION_ID}/device/+/event/up")
 
-def on_message(client, userdata, msg):
+async def on_message(client, userdata, msg):
     try:
         data = json.loads(msg.payload.decode("utf-8"))
         payload = transform_payload(data) #your transform payload function.
-        ironflock.publish_to_table('sensordata', [payload])
+        await ironflock.publish_to_table('sensordata', [payload])
 
     except Exception as e:
         print(f"Error processing message: {e}")
@@ -56,6 +58,8 @@ async def main():
     client.on_message = on_message
     client.connect(MQTT_BROKER, MQTT_PORT, 60)
 
+    if ENABLE_DEMO_DATA:
+        task2 = asyncio.create_task(simulate_device())
     client.loop_start()
 
 if __name__ == "__main__":

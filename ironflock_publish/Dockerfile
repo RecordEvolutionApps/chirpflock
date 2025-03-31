@@ -8,6 +8,6 @@ COPY requirements.txt .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ironflock_publisher.py .
+COPY * .
 
 CMD ["python", "-u", "ironflock_publisher.py"]
