@@ -78,6 +78,11 @@ data:
     - tablename: device_info
       chunkTimeInterval: 1 week
       columns:
+        - id: tsp
+          name: Timestamp
+          description: Timestamp when the uplink event was published.
+          path: args[0].publishedAt
+          dataType: timestamp
         - id: dev_eui
           name: Device EUI
           description: Unique identifier of the LoRaWAN device.
