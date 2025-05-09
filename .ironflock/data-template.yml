@@ -24,6 +24,9 @@ data:
           description: Timestamp when the uplink event was published.
           path: args[0].publishedAt
           dataType: timestamp
+        - id: application_id
+          name: Application ID
+          description: The ChirpStack Application ID the sensor is registered to.
         - id: dev_eui
           name: Device EUI
           description: Unique identifier of the LoRaWAN device.
@@ -73,7 +76,7 @@ data:
           name: Decoded Object
           description: Decoded JSON object (if a codec is configured in the application).
           path: args[0].object
-          dataType: string # you might want to use json, depending on your database.
+          dataType: json # you might want to use json, depending on your database.
 
     - tablename: device_info
       chunkTimeInterval: 1 week
