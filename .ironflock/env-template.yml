@@ -22,6 +22,7 @@ INITIAL_ADMIN_USER:                                      # The name of the envir
     type: text                      # Required! Type of value. Possible values are 'numeric' | 'text' | 'textarea' | 'boolean' 
     defaultValue: admin
     description: Initial admin user      # Description. (string)
+
 INITIAL_ADMIN_PASSWORD:
     label: Initial Admin Password
     type: text
@@ -32,18 +33,18 @@ INITIAL_ADMIN_PASSWORD:
 API_KEY:
     label: Chirpstack API_KEY for IronFlock integration
     type: text
-    defaultValue: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjaGlycHN0YWNrIiwiaXNzIjoiY2hpcnBzdGFjayIsInN1YiI6ImQ5NzgzMGNjLWNjZmYtNDk5Yi05ZTlmLTYzZWNlNGNmNGZkMSIsInR5cCI6ImtleSJ9.V2ZqyfrK90z4AjrqZX_QdCe7hnTkCkMTTY7nVIecrl8
+    defaultValue: 
     description: Provide a Nework Server API_KEY created in the Chirpstack UI to collect data in your IronFlock fleet's DB.
     secret: true
 
 APPLICATION_ID:
     label: Application ID
     type: text
-    defaultValue: 935fdc6c-53ae-4ccb-9a27-2b6184ca0de1
+    defaultValue: 
     description: Provide the ID of an Application created in the Chirpstack UI under a tenant. This application's data will be collected in IronFlock
 
-ENABLE_DEMO_DATA:
-    label: Enable Demo Data
-    type: boolean
-    defaultValue: true
-    description: When active, then a simulated sensor provides random data 
+# ENABLE_DEMO_DATA:
+#     label: Enable Demo Data
+#     type: boolean
+#     defaultValue: true
+#     description: When active, then a simulated sensor provides random data 

@@ -22,11 +22,13 @@ data:
         - id: tsp
           name: Timestamp
           description: Timestamp when the uplink event was published.
-          path: args[0].publishedAt
+          path: args[0].tsp
           dataType: timestamp
         - id: application_id
           name: Application ID
           description: The ChirpStack Application ID the sensor is registered to.
+          path: args[0].applicationId
+          dataType: string
         - id: dev_eui
           name: Device EUI
           description: Unique identifier of the LoRaWAN device.
@@ -60,12 +62,12 @@ data:
         - id: rssi
           name: RSSI
           description: Received Signal Strength Indicator.
-          path: args[0].rxInfo[0].rssi # assumes first gateway
+          path: args[0].rssi # assumes first gateway
           dataType: numeric
         - id: snr
           name: SNR
           description: Signal-to-Noise Ratio.
-          path: args[0].rxInfo[0].snr # assumes first gateway
+          path: args[0].snr # assumes first gateway
           dataType: numeric
         - id: confirmed_uplink
           name: Confirmed Uplink
@@ -84,7 +86,7 @@ data:
         - id: tsp
           name: Timestamp
           description: Timestamp when the uplink event was published.
-          path: args[0].publishedAt
+          path: args[0].tsp
           dataType: timestamp
         - id: dev_eui
           name: Device EUI
@@ -99,7 +101,7 @@ data:
         - id: application_id
           name: Application ID
           description: ID of the ChirpStack application.
-          path: args[0].applicationID
+          path: args[0].applicationId
           dataType: string
         - id: application_name
           name: Application Name

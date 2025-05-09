@@ -48,8 +48,8 @@ async def transform_payload(data, application_id):
         
         transformed_data = {
             "tsp": data.get("publishedAt"),
-            "application_id": application_id,
-            "dev_eui": data.get("devEUI"),
+            "applicationId": application_id,
+            "devEUI": data.get("devEUI"),
             "fPort": data.get("fPort"),
             "data": base64.b64decode(data.get("data", "")).decode("utf-8") if data.get("data") else None,  # Decode Base64
             "dr": data.get("txInfo", {}).get("dr"),
