@@ -60,8 +60,6 @@ def on_message(client, userdata, msg):
         # --- Schedule WAMP Publish using call_soon_threadsafe ---
         # We are in the MQTT client's thread (due to loop_start).
         # We need to schedule the async WAMP publish task to run in the main asyncio event loop.
-        # Get the running event loop (assuming IronFlock.run() starts and manages it)
-        loop = asyncio.get_event_loop()
 
         # Schedule the coroutine to run in the event loop
         # Use a lambda or partial to pass arguments to the async function
