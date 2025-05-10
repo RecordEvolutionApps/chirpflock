@@ -52,19 +52,9 @@ def on_message(client, userdata, msg):
         data = json.loads(msg.payload.decode("utf-8"))
         logger.info(f"Parsed MQTT payload data: %s", data)
 
-        # Extract application ID from the topic string
-        topic_parts = msg.topic.split('/')
-        application_id_from_topic = None
-        # Expected format: "application/<ApplicationID>/device/<DevEUI>/event/up"
-        if len(topic_parts) > 1 and topic_parts[0] == "application":
-            application_id_from_topic = topic_parts[1]
-            # logger.debug(f"Extracted Application ID: {application_id_from_topic}")
-        else:
-            logger.warning(f"Could not extract Application ID from topic: {msg.topic}")
-
         # Transform the raw payload
         # Pass the extracted application_id, not the global one if topic extraction is preferred
-        payload = transform_payload(data, application_id_from_topic)
+        payload = transform_payload(data)
 
         # --- Schedule WAMP Publish using call_soon_threadsafe ---
         # We are in the MQTT client's thread (due to loop_start).
@@ -99,7 +89,7 @@ def on_disconnect(client, userdata, rc):
 
 # --- Payload Transformation ---
 
-def transform_payload(data, application_id):
+def transform_payload(data):
     """
     Processes uplink data from ChirpStack and transforms the payload
     into a format suitable for IronFlock.
@@ -108,18 +98,17 @@ def transform_payload(data, application_id):
 
     try:
         transformed_data = {
-            "tsp": data.get("publishedAt"),
-            "applicationId": application_id,
-            "devEUI": data.get("devEUI"),
-            "fPort": data.get("fPort"),
-            "data": base64.b64decode(data.get("data", "")).decode("utf-8") if data.get("data") else None,  # Decode Base64
-            "dr": data.get("txInfo", {}).get("dr"),
-            "adr": data.get("adr"),
-            "fCnt": data.get("fCnt"),
-            "rssi": data.get("rxInfo", [{}])[0].get("rssi"),
-            "snr": data.get("rxInfo", [{}])[0].get("snr"),
-            "confirmedUplink": data.get("confirmedUplink"),
-            "object": json.dumps(data.get("object")) if data.get("object") else None,  # Convert object to JSON string
+            "time": data.get("time"),
+            "tenantId": data.get("deviceInfo").get("tenantId"),
+            "tenantName": data.get("deviceInfo").get("tenantName"),
+            "applicationId": data.get("deviceInfo").get("applicationId"),
+            "applicationName": data.get("deviceInfo").get("applicationName"),
+            "deviceProfileId": data.get("deviceInfo").get("deviceProfileId"),
+            "deviceProfileName": data.get("deviceInfo").get("deviceProfileName"),
+            "devEUI": data.get("deviceInfo").get("devEui"),
+            "deviceName": data.get("deviceInfo").get("deviceName"),
+            "rawData": data.get("data"),
+            "object": data.get("object")
         }
 
         logger.info("Transformed data: %s", transformed_data) # Use logger.info for structured data
