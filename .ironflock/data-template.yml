@@ -4,10 +4,10 @@
 # In this template you can describe the structure of the cloud data storage that the app can use to collect data from devices.
 # You can define tables and their columns and you can additionally describe "transforms".
 # Transformes are basically TimescaleDB SQL statements that can use the data in the defined tables to create and store aggregates.
-# When a user installs this app on a device in his/her fleet, then these structures will be created in
-# a TimescaleDB database in the cloud that is private to that fleet.
+# When a user installs this app on a device in his/her fleet, then these structures will be created in the Fleet Database.
+# This is a TimescaleDB database in the cloud that is private to that fleet.
 # To send data from a device to these tables in the cloud you can use the ironflock-py or ironflock-js libraries like this: 
-# rw.publish_to_table('mytablename', {tsp: '2024-01-01T00:00:00', temperature: '22'})
+# ironflock.publish_to_table('mytablename', {tsp: '2024-01-01T00:00:00', temperature: '22'})
 # When you publish data to the table you are using a secure realm in the IronFlock WAMP Messaging Cluster that is private to the fleet.
 # The data that you publish is mapped to the individual columns using the path property in the column definitions.
 # Here the 'args' keyword represents the list of arguments following the tablename in the publish_to_table function. 
@@ -24,41 +24,49 @@ data:
           description: Timestamp when the uplink event was published.
           path: args[0].time
           dataType: timestamp
+
         - id: tenant_id
           name: Tenant ID
           description: The ChirpStack Tenant ID.
           path: args[0].tenantId
           dataType: string
+
         - id: application_id
           name: Application ID
           description: The ChirpStack Application ID the sensor is registered to.
           path: args[0].applicationId
           dataType: string
+
         - id: device_profile_id
           name: Device Profile ID
           description: The ChirpStack Device Profile ID the sensor belongs to.
           path: args[0].deviceProfileId
           dataType: string
+
         - id: dev_eui
           name: Device EUI
           description: Unique identifier of the LoRaWAN sensor device.
           path: args[0].devEUI
           dataType: string
+
         - id: tenant_name
           name: Tenant Name
           description: The ChirpStack Tenant Name.
           path: args[0].tenantName
           dataType: string
+
         - id: application_name
           name: Application Name
           description: The ChirpStack Application Name.
           path: args[0].applicationName
           dataType: string
+
         - id: device_profile_name
           name: Device Profile Name
           description: The ChirpStack Device Profile Name.
           path: args[0].deviceProfileName
           dataType: string
+
         - id: device_name
           name: Sensor Device Name
           description: The ChirpStack Sensor Device Name.

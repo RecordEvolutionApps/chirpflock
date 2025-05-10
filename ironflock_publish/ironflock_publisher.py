@@ -66,7 +66,7 @@ def on_message(client, userdata, msg):
         if main_asyncio_loop is not None:
              main_asyncio_loop.call_soon_threadsafe(
                 asyncio.create_task, # The function to call in the loop's thread
-                ironflock_instance.publish_to_table('sensordata', [payload]) # The coroutine to schedule
+                ironflock_instance.publish_to_table('sensordata', payload) # The coroutine to schedule
             )
              logger.info("Scheduled publish to IronFlock table 'sensordata'")
         else:
