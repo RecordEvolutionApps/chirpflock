@@ -28,6 +28,7 @@ ENABLE_DEMO_DATA = (os.environ.get('ENABLE_DEMO_DATA', 'false').lower() == 'true
 # --- Global IronFlock Instance ---
 # This will be initialized in __main__
 ironflock_instance = None
+main_asyncio_loop = None # Global variable to store the main event loop reference
 
 # --- MQTT Callbacks ---
 
@@ -64,11 +65,15 @@ def on_message(client, userdata, msg):
 
         # Schedule the coroutine to run in the event loop
         # Use a lambda or partial to pass arguments to the async function
-        loop.call_soon_threadsafe(
-            asyncio.create_task, # The function to call in the loop's thread
-            ironflock_instance.publish_to_table('sensordata', [payload]) # The coroutine to schedule
-        )
-        logger.info("Scheduled publish to IronFlock table 'sensordata'")
+        if main_asyncio_loop is not None:
+             main_asyncio_loop.call_soon_threadsafe(
+                asyncio.create_task, # The function to call in the loop's thread
+                ironflock_instance.publish_to_table('sensordata', [payload]) # The coroutine to schedule
+            )
+             logger.info("Scheduled publish to IronFlock table 'sensordata'")
+        else:
+             logger.error("Main asyncio loop not available. Cannot schedule WAMP publish.")
+
 
     except json.JSONDecodeError:
         logger.error("Failed to decode JSON payload from MQTT.")
@@ -125,6 +130,9 @@ def transform_payload(data):
 async def main_async():
     """Main asynchronous function for the application logic."""
     logger.info("Starting IronFlock Publisher application...")
+    
+    global main_asyncio_loop
+    main_asyncio_loop = asyncio.get_running_loop()
 
     # MQTT Client Setup
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
