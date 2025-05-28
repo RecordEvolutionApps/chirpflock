@@ -1,4 +1,4 @@
-FROM chirpstack/chirpstack:4
+FROM chirpstack/chirpstack:4.12.1
 
 COPY . /etc/chirpstack/
 
