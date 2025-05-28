@@ -2,6 +2,14 @@
 # configuration example and documentation.
 
 [integration.mqtt.auth.generic]
-servers=["tcp://mosquitto:1883"]
+servers=["tcp://mosquitto:47833"]
 username=""
 password=""
+
+
+# --- Semtech UDP Packet Forwarder Configuration (ADD OR MODIFY THIS SECTION) ---
+[semtech_udp]
+  # IP:PORT to bind the UDP listener to.
+  #
+  # This is the port that your LoRaWAN gateways will send UDP packets to.
+  bind = "0.0.0.0:47837" # <--- This is the new port for Semtech UDP

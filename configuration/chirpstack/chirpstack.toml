@@ -85,8 +85,11 @@
 # API interface configuration.
 [api]
 
-  # interface:port to bind the API interface to.
-  bind="0.0.0.0:8080"
+  # interface:port to bind the API interface to. Raw gRPC binary.
+  bind="0.0.0.0:47836"
+
+  # The gRPC-Gateway endpoint (for Web UI and gRPC REST API)
+  grpc_gateway_bind = "0.0.0.0:47834"
 
   # Secret.
   #
@@ -94,12 +97,12 @@
   # is never exposed. Changing this secret will invalidate all login and API
   # tokens. The following command can be used to generate a random secret:
   #   openssl rand -base64 32
-  secret="you-must-replace-this"
+  secret="7YD0PhmLpw2CbIm43yiJmGRxYZd6PgaxS3kuFG4Mt48="
 
 
 [integration]
   enabled=["mqtt"]
 
   [integration.mqtt]
-    server="tcp://$MQTT_BROKER_HOST:1883/"
+    server="tcp://$MQTT_BROKER_HOST:47833/"
     json=true

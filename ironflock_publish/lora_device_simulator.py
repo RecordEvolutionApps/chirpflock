@@ -10,7 +10,7 @@ API_KEY = os.environ.get("API_KEY", '')  # Replace with your ChirpStack API key
 APPLICATION_ID = os.environ.get('APPLICATION_ID', 'test')
 
 DEVICE_EUI = '0004a30b001c12ab'  # Replace with your device EUI
-CHIRPSTACK_API_URL = "http://chirpstack-rest-api:8090/api/devices" #replace if needed
+CHIRPSTACK_API_URL = "http://chirpstack-rest-api:47835/api/devices" #replace if needed
 F_PORT = 1
 SEND_INTERVAL = 1  # Seconds between uplinks
 DEVICE_PROFILE_ID = "adbcc190-8fb5-43d0-88d2-93e7fdc3ed07"

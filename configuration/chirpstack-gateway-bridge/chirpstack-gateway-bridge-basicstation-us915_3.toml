@@ -2,7 +2,7 @@
 # configuration example and documentation.
 
 [integration.mqtt.auth.generic]
-servers=["tcp://mosquitto:1883"]
+servers=["tcp://mosquitto:47833"]
 username=""
 password=""
 
@@ -15,7 +15,7 @@ command_topic_template="us915_3/gateway/{{ .GatewayID }}/command/#"
 type="basic_station"
 
   [backend.basic_station]
-  bind=":3001"
+  bind=":47830"
   tls_cert=""
   tls_key=""
   ca_cert=""
