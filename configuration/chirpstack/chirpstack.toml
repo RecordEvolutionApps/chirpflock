@@ -85,11 +85,8 @@
 # API interface configuration.
 [api]
 
-  # interface:port to bind the API interface to. Raw gRPC binary.
+  # interface:port to bind the API interface to. Web UI + REST API + gRPC
   bind="0.0.0.0:47836"
-
-  # The gRPC-Gateway endpoint (for Web UI and gRPC REST API)
-  grpc_gateway_bind = "0.0.0.0:47834"
 
   # Secret.
   #

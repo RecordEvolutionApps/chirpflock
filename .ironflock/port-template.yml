@@ -21,26 +21,18 @@
 
 
 ports:
-  - name: Web interface       # Label of the port in the device's app settings
-    port: 47834               # Port under which a web server provides a user interface
+  - name: Web interface + REST API + gRPC # Label of the port in the device's app settings
+    port: 47836               # Port under which a web server provides a user interface
     main: true                # If "true", this is the port that is used for quick-access. i.e. the remote web interface is opened in a seperate browser window when clicking on the app icon on a device.
 
-  - name: Gateways (Semtech UDP)
+  - name: Gateway Base Station (Semtech UDP)
     port: 47837
     protocol: udp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
 
-  - name: Basic Station CUPS / LNS
+  - name: Gateway Base Station (CUPS / LNS)
     port: 47830
     protocol: http
 
   - name: MQTT
     port: 47833
     protocol: tcp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
-
-  - name: gRPC
-    port: 47836
-    protocol: http
-
-  - name: REST API endpoint
-    port: 47835
-    protocol: http

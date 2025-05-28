@@ -17,8 +17,12 @@ services:
       - REDIS_HOST=redis            # Use service name
       - POSTGRESQL_HOST=postgres    # Use service name
     ports:
-      - "47834:47834"
       - "47836:47836"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:47836/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   chirpstack-gateway-bridge:
     # image: chirpstack/chirpstack-gateway-bridge:4
@@ -51,15 +55,6 @@ services:
       - INTEGRATION__MQTT__SERVER=mosquitto:47833  # Use service name
     depends_on:
       - mosquitto
-
-  chirpstack-rest-api:
-    image: chirpstack/chirpstack-rest-api:4
-    restart: unless-stopped
-    command: --server chirpstack:47834 --bind 0.0.0.0:47835 --insecure  # Use service name
-    ports:
-      - "47835:47835"
-    depends_on:
-      - chirpstack
 
   postgres:
     # image: postgres:14-alpine
