@@ -18,6 +18,7 @@ services:
       - POSTGRESQL_HOST=postgres    # Use service name
     ports:
       - "47834:47834"
+      - "47836:47836"
 
   chirpstack-gateway-bridge:
     # image: chirpstack/chirpstack-gateway-bridge:4
