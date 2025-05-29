@@ -24,6 +24,7 @@ ports:
   - name: Web interface + REST API + gRPC # Label of the port in the device's app settings
     port: 47836               # Port under which a web server provides a user interface
     main: true                # If "true", this is the port that is used for quick-access. i.e. the remote web interface is opened in a seperate browser window when clicking on the app icon on a device.
+    protocol: http
 
   - name: Gateway Base Station (Semtech UDP)
     port: 47837

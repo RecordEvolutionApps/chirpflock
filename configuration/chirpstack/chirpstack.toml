@@ -103,3 +103,12 @@
   [integration.mqtt]
     server="tcp://$MQTT_BROKER_HOST:47833/"
     json=true
+
+[network_server.gateway.backend]
+type="mqtt"
+
+[network_server.gateway.backend.mqtt]
+server="tcp://$MQTT_BROKER_HOST:47833"
+event_topic="gateway/+/event/+"
+state_topic="gateway/+/state/+"
+command_topic="gateway/{gateway_id}/command/#"
