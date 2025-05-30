@@ -26,7 +26,7 @@ services:
       context: configuration/chirpstack-gateway-bridge
     restart: unless-stopped
     ports:
-      - "47837:47837/udp"
+      - "1700:1700/udp"
     # volumes:
     #   - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
     environment:

@@ -12,7 +12,7 @@ password=""
   # IP:PORT to bind the UDP listener to.
   #
   # This is the port that your LoRaWAN gateways will send UDP packets to.
-  bind = "0.0.0.0:47837" # <--- This is the new port for Semtech UDP
+  bind = "0.0.0.0:1700" # <--- This is the new port for Semtech UDP
 
 [general]
 log_level = 5

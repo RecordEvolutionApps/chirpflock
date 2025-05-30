@@ -27,7 +27,7 @@ ports:
     protocol: http
 
   - name: Gateway Base Station (Semtech UDP)
-    port: 47837
+    port: 1700
     protocol: udp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
 
   - name: Gateway Base Station (CUPS / LNS)
