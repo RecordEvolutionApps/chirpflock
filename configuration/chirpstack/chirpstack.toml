@@ -4,7 +4,7 @@
   # Log level.
   #
   # Options are: trace, debug, info, warn error.
-  level="info"
+  level="debug"
 
 
 # PostgreSQL configuration.
@@ -108,7 +108,4 @@
 type="mqtt"
 
 [network_server.gateway.backend.mqtt]
-server="tcp://$MQTT_BROKER_HOST:$MQTT_BROKER_PORT"
-event_topic="gateway/+/event/+"
-state_topic="gateway/+/state/+"
-command_topic="gateway/{gateway_id}/command/#"
+server="tcp://$MQTT_BROKER_HOST:$MQTT_BROKER_PORT/"

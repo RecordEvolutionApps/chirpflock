@@ -38,7 +38,7 @@
         topic_prefix="au915_2"
 
         # MQTT server (e.g. scheme://host:port where scheme is tcp, ssl or ws)
-        server="tcp://$MQTT_BROKER_HOST:$MQTT_BROKER_PORT"
+        server="tcp://$MQTT_BROKER_HOST:$MQTT_BROKER_PORT/"
 
         # Connect with the given username (optional)
         username=""
