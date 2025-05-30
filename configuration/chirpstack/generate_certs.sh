@@ -16,7 +16,7 @@ else
   echo "[INFO] Using existing CA certificate."
 fi
 
-chown chirpstack:chirpstack /etc/chirpstack/certs/ca.key
-chown chirpstack:chirpstack /etc/chirpstack/certs/ca.crt
+chown 65534:65534 /etc/chirpstack/certs/ca.key
+chown 65534:65534 /etc/chirpstack/certs/ca.crt
 chmod 600 /etc/chirpstack/certs/ca.key
 chmod 644 /etc/chirpstack/certs/ca.crt
