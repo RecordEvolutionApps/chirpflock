@@ -15,3 +15,8 @@ if [ ! -f "$CA_KEY" ] || [ ! -f "$CA_CERT" ]; then
 else
   echo "[INFO] Using existing CA certificate."
 fi
+
+chown chirpstack:chirpstack /etc/chirpstack/certs/ca.key
+chown chirpstack:chirpstack /etc/chirpstack/certs/ca.crt
+chmod 600 /etc/chirpstack/certs/ca.key
+chmod 644 /etc/chirpstack/certs/ca.crt
