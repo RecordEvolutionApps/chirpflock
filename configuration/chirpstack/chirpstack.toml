@@ -101,14 +101,14 @@
   enabled=["mqtt"]
 
   [integration.mqtt]
-    server="tcp://$MQTT_BROKER_HOST:47833/"
+    server="tcp://$MQTT_BROKER_HOST:$MQTT_BROKER_PORT/"
     json=true
 
 [network_server.gateway.backend]
 type="mqtt"
 
 [network_server.gateway.backend.mqtt]
-server="tcp://$MQTT_BROKER_HOST:47833"
+server="tcp://$MQTT_BROKER_HOST:$MQTT_BROKER_PORT"
 event_topic="gateway/+/event/+"
 state_topic="gateway/+/state/+"
 command_topic="gateway/{gateway_id}/command/#"

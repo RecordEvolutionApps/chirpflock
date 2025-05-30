@@ -14,6 +14,7 @@ services:
       - redis
     environment:
       - MQTT_BROKER_HOST=mosquitto  # Use service name
+      - MQTT_BROKER_PORT=47833
       - REDIS_HOST=redis            # Use service name
       - POSTGRESQL_HOST=postgres    # Use service name
     ports:
