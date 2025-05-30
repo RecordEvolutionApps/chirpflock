@@ -35,5 +35,5 @@ ports:
     protocol: http
 
   - name: MQTT
-    port: 47833
+    port: 1883
     protocol: tcp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")

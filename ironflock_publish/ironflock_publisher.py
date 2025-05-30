@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # --- Configuration ---
 # Read configuration from environment variables
 MQTT_BROKER = os.environ.get("MQTT_BROKER_HOST", "mosquitto") # Default to service name
-MQTT_PORT = int(os.environ.get("MQTT_BROKER_PORT", 47833)) # Default to standard port
+MQTT_PORT = int(os.environ.get("MQTT_BROKER_PORT", 1883)) # Default to standard port
 APPLICATION_ID = os.environ.get('APPLICATION_ID', '') # Keep default empty if not set
 ENABLE_DEMO_DATA = (os.environ.get('ENABLE_DEMO_DATA', 'false').lower() == 'true') # Case-insensitive check
 
