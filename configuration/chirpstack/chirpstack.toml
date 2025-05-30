@@ -109,3 +109,7 @@ type="mqtt"
 
 [network_server.gateway.backend.mqtt]
 server="tcp://$MQTT_BROKER_HOST:$MQTT_BROKER_PORT/"
+
+[gateway]
+  ca_cert = "/etc/chirpstack/certs/ca.crt"
+  ca_key = "/etc/chirpstack/certs/ca.key"
