@@ -1,4 +1,4 @@
-ironflock==1.0.3
+ironflock==1.0.6
 # websockets==15.0.1
 paho-mqtt==2.1.0
 requests==2.32.3
