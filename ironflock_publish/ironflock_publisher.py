@@ -4,6 +4,7 @@ import base64
 import struct
 import os
 import sys
+from datetime import datetime
 # Assuming IronFlock is a library that manages an asyncio event loop
 # and provides a run() method that starts it.
 # Replace with the actual import if IronFlock is structured differently.
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 # --- Configuration ---
 # Read configuration from environment variables
+DEVICE_KEY = os.environ["DEVICE_KEY"]
 MQTT_BROKER = os.environ.get("MQTT_BROKER_HOST", "mosquitto") # Default to service name
 MQTT_PORT = int(os.environ.get("MQTT_BROKER_PORT", 1883)) # Default to standard port
 APPLICATION_ID = os.environ.get('APPLICATION_ID', '') # Keep default empty if not set
@@ -123,11 +125,25 @@ def transform_payload(data):
         # Depending on requirements, you might return None or raise the exception
         return None
 
+async def register_device():
+    print("########### Storing Device info ################")
+    await ironflock_instance.publish_to_table(
+        "devices",
+        {
+            "tsp": datetime.now().astimezone().isoformat(),
+            "url": f"https://{DEVICE_KEY}-chirpflock-47836.app.ironflock.com",
+            "state": 1,
+        },
+    )
+    print("done")
+
+
 # --- Main Execution ---
 
 async def main_async():
     """Main asynchronous function for the application logic."""
     logger.info("Starting IronFlock Publisher application...")
+    await register_device()
     
     global main_asyncio_loop
     main_asyncio_loop = asyncio.get_running_loop()
