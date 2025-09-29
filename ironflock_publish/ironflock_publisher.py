@@ -132,7 +132,7 @@ async def register_device():
         {
             "tsp": datetime.now().astimezone().isoformat(),
             "url": f"https://{DEVICE_KEY}-chirpflock-47836.app.ironflock.com",
-            "state": 1,
+            "deleted": False,
         },
     )
     print("done")

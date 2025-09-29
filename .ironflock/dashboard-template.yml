@@ -118,10 +118,6 @@ widgets:
                 operator: =
                 value: "true"
                 dataType: boolean
-              - column: deleted
-                operator: =
-                value: "false"
-                dataType: boolean
             limit: 1
     version: 1.0.3
     layout_id: 823116a1-d080-42de-be05-891b23a3df12
@@ -151,10 +147,6 @@ widgets:
               - column: latest_flag
                 operator: =
                 value: "true"
-                dataType: boolean
-              - column: deleted
-                operator: =
-                value: "false"
                 dataType: boolean
             windowPeriod: null
             windowLength: 5
