@@ -101,6 +101,9 @@ widgets:
         This app provides a convenient way to deploy and manage ChirpStack. Please refer to the official ChirpStack documentation for detailed information and advanced configurations.
     version: 1.0.2
     layout_id: 7828c821-52b5-4b64-ab21-5ec85c697875
+    custom_style:
+      tile_border_color: "#eee"
+      tile_border_radius: 4px
   - package_name: widget-embed
     chartconfig:
       webUrl:
@@ -218,4 +221,6 @@ style:
   background_color: "#5b5c6e"
   text_color: "#fff"
   tile_background_color: "#5b5c6e"
-  tile_border_color: "#eee"
+  tile_border_color: "#0000"
+  grid_gap: 0
+  tile_border_radius: 0px
