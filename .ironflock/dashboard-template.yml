@@ -124,6 +124,27 @@ widgets:
             limit: 1
     version: 1.0.3
     layout_id: 823116a1-d080-42de-be05-891b23a3df12
+  - package_name: widget-embed
+    chartconfig:
+      multiEmbed: $bool:true
+      title: null
+      gap: $num:4
+      data:
+        tableRef:
+          tablename: devices
+          queryParams:
+            limit: 500
+            filterAnd:
+              - column: latest_flag
+                operator: =
+                value: "true"
+                dataType: boolean
+          format:
+            url: url
+            title: null
+    custom_style: null
+    version: 1.0.5
+    layout_id: a28045b0-36e5-4774-8746-f24d124814dd
   - package_name: widget-navbutton
     chartconfig:
       title: $str:Home
@@ -196,7 +217,7 @@ layout:
       y: 3
       w: 48
       h: 45
-      id: 7828c821-52b5-4b64-ab21-5ec85c697875
+      id: a28045b0-36e5-4774-8746-f24d124814dd
   subRoutes:
     "*":
       gridLayout:
