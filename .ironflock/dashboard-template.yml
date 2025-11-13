@@ -133,7 +133,7 @@ widgets:
         tableRef:
           tablename: devices
           queryParams:
-            limit: 500
+            limit: 1
             filterAnd:
               - column: latest_flag
                 operator: =
