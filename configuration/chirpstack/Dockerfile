@@ -1,4 +1,4 @@
-FROM chirpstack/chirpstack:4.12.1
+FROM chirpstack/chirpstack:4.18.0
 
 USER root
 RUN apk update && apk add openssl

@@ -1,38 +1,42 @@
 import asyncio
 import json
-import base64
-import struct
+import logging
 import os
 import sys
 from datetime import datetime
+
+import paho.mqtt.client as mqtt
+
 # Assuming IronFlock is a library that manages an asyncio event loop
 # and provides a run() method that starts it.
 # Replace with the actual import if IronFlock is structured differently.
 from ironflock import IronFlock
 
-
-import paho.mqtt.client as mqtt
-
-import logging
 # Configure logging to stdout
-logging.basicConfig(level=logging.INFO, stream=sys.stdout,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO,
+    stream=sys.stdout,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 # --- Configuration ---
 # Read configuration from environment variables
 DEVICE_KEY = os.environ["DEVICE_KEY"]
-MQTT_BROKER = os.environ.get("MQTT_BROKER_HOST", "mosquitto") # Default to service name
-MQTT_PORT = int(os.environ.get("MQTT_BROKER_PORT", 1883)) # Default to standard port
-APPLICATION_ID = os.environ.get('APPLICATION_ID', '') # Keep default empty if not set
-ENABLE_DEMO_DATA = (os.environ.get('ENABLE_DEMO_DATA', 'false').lower() == 'true') # Case-insensitive check
+MQTT_BROKER = os.environ.get("MQTT_BROKER_HOST", "mosquitto")  # Default to service name
+MQTT_PORT = int(os.environ.get("MQTT_BROKER_PORT", 1883))  # Default to standard port
+APPLICATION_ID = os.environ.get("APPLICATION_ID", "")  # Keep default empty if not set
+ENABLE_DEMO_DATA = (
+    os.environ.get("ENABLE_DEMO_DATA", "false").lower() == "true"
+)  # Case-insensitive check
 
 # --- Global IronFlock Instance ---
 # This will be initialized in __main__
 ironflock_instance = None
-main_asyncio_loop = None # Global variable to store the main event loop reference
+main_asyncio_loop = None  # Global variable to store the main event loop reference
 
 # --- MQTT Callbacks ---
+
 
 def on_connect(client, userdata, flags, rc, properties):
     """Called when the MQTT client connects to the broker."""
@@ -40,12 +44,17 @@ def on_connect(client, userdata, flags, rc, properties):
         logger.info(f"Connected to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}")
         # Subscribe to the uplink topic
         # Use the configured APPLICATION_ID if set, otherwise subscribe to all
-        subscribe_topic = f"application/{APPLICATION_ID}/device/+/event/up" if APPLICATION_ID else "application/+/device/+/event/up"
+        subscribe_topic = (
+            f"application/{APPLICATION_ID}/device/+/event/up"
+            if APPLICATION_ID
+            else "application/+/device/+/event/up"
+        )
         client.subscribe(subscribe_topic)
         logger.info(f"Subscribed to MQTT topic: {subscribe_topic}")
     else:
         logger.error(f"Failed to connect to MQTT broker, return code {rc}")
         # Implement reconnection logic or error handling if needed
+
 
 def on_message(client, userdata, msg):
     """Called when an MQTT message is received."""
@@ -59,21 +68,36 @@ def on_message(client, userdata, msg):
         # Pass the extracted application_id, not the global one if topic extraction is preferred
         payload = transform_payload(data)
 
-        # --- Schedule WAMP Publish using call_soon_threadsafe ---
-        # We are in the MQTT client's thread (due to loop_start).
-        # We need to schedule the async WAMP publish task to run in the main asyncio event loop.
-
-        # Schedule the coroutine to run in the event loop
-        # Use a lambda or partial to pass arguments to the async function
-        if main_asyncio_loop is not None:
-             main_asyncio_loop.call_soon_threadsafe(
-                asyncio.create_task, # The function to call in the loop's thread
-                ironflock_instance.publish_to_table('sensordata', payload) # The coroutine to schedule
+        # --- Schedule WAMP Publish on the main asyncio loop ---
+        # We are in the MQTT client's thread (paho's loop_start). publish_to_table
+        # is a coroutine that must run on the asyncio loop in the main thread.
+        # asyncio.run_coroutine_threadsafe is the documented way to hand a coroutine
+        # to a loop from another thread: it schedules the task ON the loop, keeps a
+        # strong reference so it can't be garbage-collected mid-flight (a bare
+        # call_soon_threadsafe(create_task, ...) does not), and returns a
+        # concurrent.futures.Future we can use to surface any publish error.
+        if payload is None:
+            logger.warning("transform_payload returned None; skipping publish.")
+        elif main_asyncio_loop is not None:
+            future = asyncio.run_coroutine_threadsafe(
+                ironflock_instance.publish_to_table("sensordata", payload),
+                main_asyncio_loop,
             )
-             logger.info("Scheduled publish to IronFlock table 'sensordata'")
-        else:
-             logger.error("Main asyncio loop not available. Cannot schedule WAMP publish.")
 
+            def _log_publish_result(fut):
+                try:
+                    fut.result()
+                except Exception:
+                    logger.error(
+                        "Publish to IronFlock table 'sensordata' failed.", exc_info=True
+                    )
+
+            future.add_done_callback(_log_publish_result)
+            logger.info("Scheduled publish to IronFlock table 'sensordata'")
+        else:
+            logger.error(
+                "Main asyncio loop not available. Cannot schedule WAMP publish."
+            )
 
     except json.JSONDecodeError:
         logger.error("Failed to decode JSON payload from MQTT.")
@@ -94,6 +118,7 @@ def on_disconnect(client, userdata, rc):
 
 # --- Payload Transformation ---
 
+
 def transform_payload(data):
     """
     Processes uplink data from ChirpStack and transforms the payload
@@ -113,10 +138,12 @@ def transform_payload(data):
             "devEUI": data.get("deviceInfo").get("devEui"),
             "deviceName": data.get("deviceInfo").get("deviceName"),
             "rawData": data.get("data"),
-            "object": data.get("object")
+            "object": data.get("object"),
         }
 
-        logger.info("Transformed data: %s", transformed_data) # Use logger.info for structured data
+        logger.info(
+            "Transformed data: %s", transformed_data
+        )  # Use logger.info for structured data
         return transformed_data
 
     except Exception as e:
@@ -124,6 +151,7 @@ def transform_payload(data):
         logger.error(f"Raw data that caused error: %s", data)
         # Depending on requirements, you might return None or raise the exception
         return None
+
 
 async def register_device():
     print("########### Storing Device info ################")
@@ -140,11 +168,12 @@ async def register_device():
 
 # --- Main Execution ---
 
+
 async def main_async():
     """Main asynchronous function for the application logic."""
     logger.info("Starting IronFlock Publisher application...")
     await register_device()
-    
+
     global main_asyncio_loop
     main_asyncio_loop = asyncio.get_running_loop()
 
@@ -152,7 +181,7 @@ async def main_async():
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     client.on_connect = on_connect
     client.on_message = on_message
-    client.on_disconnect = on_disconnect # Assign disconnect handler
+    client.on_disconnect = on_disconnect  # Assign disconnect handler
 
     # If authentication is needed for Mosquitto
     # MQTT_USERNAME = os.environ.get("MQTT_USERNAME")
@@ -164,13 +193,19 @@ async def main_async():
     try:
         # Connect to MQTT broker - this is a blocking call in this context (loop_start)
         client.connect(MQTT_BROKER, MQTT_PORT, 60)
-        logger.info(f"Attempting to connect to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}")
+        logger.info(
+            f"Attempting to connect to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}"
+        )
     except ConnectionRefusedError:
-        logger.error(f"MQTT Connection refused. Make sure the Mosquitto broker is running and accessible at {MQTT_BROKER}:{MQTT_PORT}")
-        sys.exit(1) # Exit if initial connection fails
+        logger.error(
+            f"MQTT Connection refused. Make sure the Mosquitto broker is running and accessible at {MQTT_BROKER}:{MQTT_PORT}"
+        )
+        sys.exit(1)  # Exit if initial connection fails
     except Exception as e:
-        logger.error(f"An error occurred during initial MQTT connection: {e}", exc_info=True)
-        sys.exit(1) # Exit on other connection errors
+        logger.error(
+            f"An error occurred during initial MQTT connection: {e}", exc_info=True
+        )
+        sys.exit(1)  # Exit on other connection errors
 
     # Start the MQTT network loop in a separate thread.
     # This allows the main thread to run the asyncio event loop.
@@ -189,7 +224,7 @@ async def main_async():
     # This prevents the asyncio loop from stopping immediately after loop_start()
     # You could add other asyncio tasks here if needed.
     while True:
-        await asyncio.sleep(3600) # Sleep for a long time, or indefinitely
+        await asyncio.sleep(3600)  # Sleep for a long time, or indefinitely
 
 
 if __name__ == "__main__":
@@ -204,6 +239,8 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logger.info("Application stopped by user.")
     except Exception as e:
-        logger.error(f"An unexpected error occurred during IronFlock execution: {e}", exc_info=True)
+        logger.error(
+            f"An unexpected error occurred during IronFlock execution: {e}",
+            exc_info=True,
+        )
         sys.exit(1)
-

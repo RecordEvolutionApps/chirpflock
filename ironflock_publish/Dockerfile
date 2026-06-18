@@ -1,5 +1,5 @@
 # Use a Python base image (adjust version as needed)
-FROM python:3.9-slim-buster
+FROM python:3.12
 
 WORKDIR /app
 
