@@ -87,7 +87,7 @@ data:
 
     - tablename: devices
       chunkTimeInterval: 1 year
-      maintainLatestFlagFor: ['devname'] # (optional) This table will mark the latest row for each unique value in the 'machinename' column (in the special boolean column "latest_flag"). This is useful for semantic updates on entities (e.g. machines) in tables.
+      maintainLatestFlagFor: ['devname'] # (optional) This table will mark the latest row for each unique value in the 'devname' column (in the special boolean column "latest_flag"). This is useful for semantic updates on entities (e.g. devices) in tables.
       columns:
         - id: tsp
           name: Timestamp

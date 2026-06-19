@@ -17,34 +17,16 @@
 # - Values that users provide in the form on device level override settings that users provide on group level.
 ############################################################
 
-INITIAL_ADMIN_USER:                                      # The name of the environment variable that contains the user provided value
-    label: Initial admin user
-    type: text                      # Required! Type of value. Possible values are 'numeric' | 'text' | 'textarea' | 'boolean' 
-    defaultValue: admin
-    description: Initial admin user      # Description. (string)
-
-INITIAL_ADMIN_PASSWORD:
-    label: Initial Admin Password
-    type: text
-    defaultValue: admin
-    description: May be changed later within the Chirpstack platform
-    secret: true
-
-API_KEY:
-    label: Chirpstack API_KEY for IronFlock integration
-    type: text
-    defaultValue: 
-    description: Provide a Nework Server API_KEY created in the Chirpstack UI to collect data in your IronFlock fleet's DB.
-    secret: true
+# Notes specific to this app:
+# - DEVICE_KEY is injected automatically by the IronFlock platform and does not
+#   need to be (and should not be) defined here. ironflock_publisher.py uses it
+#   to build the device's remote-access URL.
+# - ChirpStack ships with a default admin user "admin" / "admin". Change the
+#   password from within the ChirpStack web UI after first login. (There is no
+#   environment variable to seed it, so no INITIAL_ADMIN_* fields are exposed.)
 
 APPLICATION_ID:
     label: Application ID
     type: text
-    defaultValue: 
-    description: Provide the ID of an Application created in the Chirpstack UI under a tenant. This application's data will be collected in IronFlock
-
-# ENABLE_DEMO_DATA:
-#     label: Enable Demo Data
-#     type: boolean
-#     defaultValue: true
-#     description: When active, then a simulated sensor provides random data 
+    defaultValue:
+    description: ID of an Application created in the ChirpStack UI under a tenant. Uplinks from this application are collected into your IronFlock fleet DB. Leave empty to collect from all applications.

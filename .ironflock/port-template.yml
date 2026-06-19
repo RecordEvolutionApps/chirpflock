@@ -34,6 +34,8 @@ ports:
     port: 47830
     protocol: http
 
-  - name: MQTT
-    port: 1883
-    protocol: tcp             # Possible values: "http" | "https" | "tcp" | "udp" (default: "http")
+  # NOTE: The MQTT broker (1883) is intentionally NOT exposed for remote access.
+  # It allows anonymous connections and is internal plumbing between ChirpStack
+  # and the gateway bridge. Exposing it would let anyone inject forged uplinks or
+  # read all traffic. If you must expose it, enable authentication first
+  # (see configuration/mosquitto/config/mosquitto.conf).

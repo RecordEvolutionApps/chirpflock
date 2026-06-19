@@ -4,7 +4,7 @@
   # Log level.
   #
   # Options are: trace, debug, info, warn error.
-  level="debug"
+  level="info"
 
 
 # PostgreSQL configuration.
@@ -18,7 +18,9 @@
   #  * disable - Do not use TLS
   #  * prefer - Attempt to connect with TLS but allow sessions without
   #  * require - Require the use of TLS
-  dsn="postgres://chirpstack:chirpstack@$POSTGRESQL_HOST/chirpstack?sslmode=disable"
+  # Credentials are injected via environment variables (see docker-compose.yml)
+  # so they are not hardcoded here. They default to chirpstack/chirpstack/chirpstack.
+  dsn="postgres://$POSTGRESQL_USER:$POSTGRESQL_PASS@$POSTGRESQL_HOST/$POSTGRESQL_DB?sslmode=disable"
 
   # Max open connections.
   #
@@ -92,9 +94,14 @@
   #
   # This secret is used for generating login and API tokens, make sure this
   # is never exposed. Changing this secret will invalidate all login and API
-  # tokens. The following command can be used to generate a random secret:
-  #   openssl rand -base64 32
-  secret="7YD0PhmLpw2CbIm43yiJmGRxYZd6PgaxS3kuFG4Mt48="
+  # tokens.
+  #
+  # Provided at runtime via the API_SECRET environment variable, which the
+  # container entrypoint (entrypoint.sh) generates once per deployment and
+  # persists in the `certs` volume. It is intentionally NOT hardcoded here:
+  # a committed shared secret would let anyone forge admin tokens for every
+  # install.
+  secret="$API_SECRET"
 
 
 [integration]

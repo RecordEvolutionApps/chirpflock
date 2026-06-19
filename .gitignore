@@ -1,4 +1,10 @@
-
 # data folder
 /data
 /lorawan-devices
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]

@@ -21,14 +21,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # --- Configuration ---
-# Read configuration from environment variables
-DEVICE_KEY = os.environ["DEVICE_KEY"]
+# Read configuration from environment variables.
+# DEVICE_KEY is injected by the IronFlock platform at runtime. Read it lazily so
+# the module can be imported (and a clear error logged) even when it is unset,
+# instead of crashing with a bare KeyError at import time.
+DEVICE_KEY = os.environ.get("DEVICE_KEY")
 MQTT_BROKER = os.environ.get("MQTT_BROKER_HOST", "mosquitto")  # Default to service name
 MQTT_PORT = int(os.environ.get("MQTT_BROKER_PORT", 1883))  # Default to standard port
 APPLICATION_ID = os.environ.get("APPLICATION_ID", "")  # Keep default empty if not set
-ENABLE_DEMO_DATA = (
-    os.environ.get("ENABLE_DEMO_DATA", "false").lower() == "true"
-)  # Case-insensitive check
 
 # --- Global IronFlock Instance ---
 # This will be initialized in __main__
@@ -62,7 +62,7 @@ def on_message(client, userdata, msg):
     try:
         # Decode payload from bytes to string, then parse JSON
         data = json.loads(msg.payload.decode("utf-8"))
-        logger.info(f"Parsed MQTT payload data: %s", data)
+        logger.info("Parsed MQTT payload data: %s", data)
 
         # Transform the raw payload
         # Pass the extracted application_id, not the global one if topic extraction is preferred
@@ -127,16 +127,19 @@ def transform_payload(data):
     # logger.info("Received raw data for transformation: %s", data) # Use logger.info for structured data
 
     try:
+        # Default to an empty dict so a missing "deviceInfo" key yields None
+        # fields instead of raising AttributeError.
+        device_info = data.get("deviceInfo") or {}
         transformed_data = {
             "time": data.get("time"),
-            "tenantId": data.get("deviceInfo").get("tenantId"),
-            "tenantName": data.get("deviceInfo").get("tenantName"),
-            "applicationId": data.get("deviceInfo").get("applicationId"),
-            "applicationName": data.get("deviceInfo").get("applicationName"),
-            "deviceProfileId": data.get("deviceInfo").get("deviceProfileId"),
-            "deviceProfileName": data.get("deviceInfo").get("deviceProfileName"),
-            "devEUI": data.get("deviceInfo").get("devEui"),
-            "deviceName": data.get("deviceInfo").get("deviceName"),
+            "tenantId": device_info.get("tenantId"),
+            "tenantName": device_info.get("tenantName"),
+            "applicationId": device_info.get("applicationId"),
+            "applicationName": device_info.get("applicationName"),
+            "deviceProfileId": device_info.get("deviceProfileId"),
+            "deviceProfileName": device_info.get("deviceProfileName"),
+            "devEUI": device_info.get("devEui"),
+            "deviceName": device_info.get("deviceName"),
             "rawData": data.get("data"),
             "object": data.get("object"),
         }
@@ -148,7 +151,7 @@ def transform_payload(data):
 
     except Exception as e:
         logger.error(f"Error transforming uplink payload: {e}", exc_info=True)
-        logger.error(f"Raw data that caused error: %s", data)
+        logger.error("Raw data that caused error: %s", data)
         # Depending on requirements, you might return None or raise the exception
         return None
 
@@ -172,6 +175,14 @@ async def register_device():
 async def main_async():
     """Main asynchronous function for the application logic."""
     logger.info("Starting IronFlock Publisher application...")
+
+    if not DEVICE_KEY:
+        logger.error(
+            "DEVICE_KEY is not set. It is normally injected by the IronFlock "
+            "platform; for a local run, export DEVICE_KEY before starting. Exiting."
+        )
+        sys.exit(1)
+
     await register_device()
 
     global main_asyncio_loop
@@ -190,22 +201,23 @@ async def main_async():
     #     client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
     #     logger.info("MQTT authentication enabled.")
 
-    try:
-        # Connect to MQTT broker - this is a blocking call in this context (loop_start)
-        client.connect(MQTT_BROKER, MQTT_PORT, 60)
-        logger.info(
-            f"Attempting to connect to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}"
-        )
-    except ConnectionRefusedError:
-        logger.error(
-            f"MQTT Connection refused. Make sure the Mosquitto broker is running and accessible at {MQTT_BROKER}:{MQTT_PORT}"
-        )
-        sys.exit(1)  # Exit if initial connection fails
-    except Exception as e:
-        logger.error(
-            f"An error occurred during initial MQTT connection: {e}", exc_info=True
-        )
-        sys.exit(1)  # Exit on other connection errors
+    # Retry the initial connection with backoff instead of exiting: the broker
+    # may not be ready yet when this container starts. Once connected, paho's
+    # loop_start() handles automatic reconnection.
+    backoff = 1
+    max_backoff = 30
+    while True:
+        try:
+            client.connect(MQTT_BROKER, MQTT_PORT, 60)
+            logger.info(f"Connected to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}")
+            break
+        except (ConnectionRefusedError, OSError) as e:
+            logger.warning(
+                f"MQTT broker not reachable at {MQTT_BROKER}:{MQTT_PORT} ({e}); "
+                f"retrying in {backoff}s."
+            )
+            await asyncio.sleep(backoff)
+            backoff = min(backoff * 2, max_backoff)
 
     # Start the MQTT network loop in a separate thread.
     # This allows the main thread to run the asyncio event loop.

@@ -15,4 +15,5 @@ password=""
   bind = "0.0.0.0:1700" # <--- This is the new port for Semtech UDP
 
 [general]
-log_level = 5
+# 5 = debug, 4 = info, 3 = warning, 2 = error.
+log_level = 4

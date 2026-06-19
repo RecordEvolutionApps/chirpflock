@@ -1,15 +1,16 @@
 FROM chirpstack/chirpstack:4.18.0
 
 USER root
-RUN apk update && apk add openssl
+# openssl: generate the gateway CA + API secret at runtime (see entrypoint.sh).
+# su-exec: drop back to the unprivileged user after provisioning.
+RUN apk add --no-cache openssl su-exec
 
-COPY generate_certs.sh /generate_certs.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-RUN /generate_certs.sh
+# Config only (chirpstack.toml + region_*.toml) — copied explicitly so build
+# files (Dockerfile, entrypoint.sh) don't leak into the config dir. Secrets are
+# NOT baked in; they are generated at container start into the `certs` volume.
+COPY chirpstack.toml region_*.toml /etc/chirpstack/
 
-USER 65534
-
-COPY . /etc/chirpstack/
-
-# ENTRYPOINT [ "/entrypoint.sh" ]
-
+ENTRYPOINT ["/entrypoint.sh"]
