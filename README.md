@@ -23,7 +23,7 @@ ChirpFlock is a Docker Compose bundle. The services (see `docker-compose.yml`):
 | `chirpstack` | LoRaWAN Network Server + Web UI + REST/gRPC API | `chirpstack/chirpstack:4.18.0` |
 | `chirpstack-gateway-bridge` | Semtech UDP packet-forwarder bridge | `chirpstack/chirpstack-gateway-bridge:4.0.11` |
 | `chirpstack-gateway-bridge-basicstation` | BasicStation (CUPS / LNS) bridge | `chirpstack/chirpstack-gateway-bridge:4.0.11` |
-| `mosquitto` | MQTT broker (internal bus between ChirpStack and the bridges) | `eclipse-mosquitto:2.0.21` |
+| `mosquitto` | MQTT broker — internal bus between ChirpStack, the gateway bridges, and `ironflock_publisher` (the source of all IronFlock data collection) | `eclipse-mosquitto:2.0.21` |
 | `postgres` | ChirpStack database (TimescaleDB extensions) | `postgres:14-alpine` |
 | `redis` | ChirpStack cache / device session store | `redis:7-alpine` |
 | `ironflock_publisher` | Subscribes to ChirpStack uplinks over MQTT and publishes them to the IronFlock fleet DB over WAMP | `python:3.12-slim` |

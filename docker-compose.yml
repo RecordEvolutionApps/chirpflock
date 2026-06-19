@@ -100,10 +100,13 @@ services:
     build:
       context: configuration/mosquitto
     restart: unless-stopped
-    # MQTT (1883) is internal plumbing between ChirpStack and the gateway bridge.
-    # It is intentionally NOT published to the host or exposed for remote access
-    # (see .ironflock/port-template.yml) because the broker allows anonymous
-    # access. Services reach it over the compose network as "mosquitto:1883".
+    # MQTT (1883) is the internal bus between ChirpStack, the gateway bridges,
+    # and ironflock_publisher (which subscribes to uplink events here and is the
+    # source of all IronFlock data collection). It is intentionally NOT published
+    # to the host or exposed for remote access (see .ironflock/port-template.yml)
+    # because the broker allows anonymous access. All of those services reach it
+    # over the compose network as "mosquitto:1883", so keeping it internal does
+    # not affect data collection.
     healthcheck:
       test: ["CMD", "nc", "-z", "127.0.0.1", "1883"]
       interval: 10s

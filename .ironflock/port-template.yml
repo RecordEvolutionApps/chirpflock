@@ -35,7 +35,9 @@ ports:
     protocol: http
 
   # NOTE: The MQTT broker (1883) is intentionally NOT exposed for remote access.
-  # It allows anonymous connections and is internal plumbing between ChirpStack
-  # and the gateway bridge. Exposing it would let anyone inject forged uplinks or
-  # read all traffic. If you must expose it, enable authentication first
+  # It allows anonymous connections and is the internal bus between ChirpStack,
+  # the gateway bridges, and ironflock_publisher, which all reach it over the
+  # compose network (so this does not affect IronFlock data collection).
+  # Exposing it would let anyone inject forged uplinks or read all traffic. If
+  # you must expose it, enable authentication first
   # (see configuration/mosquitto/config/mosquitto.conf).
