@@ -1,5 +1,5 @@
 # Slim base keeps the image small; these deps ship as pure-Python/wheel builds.
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 

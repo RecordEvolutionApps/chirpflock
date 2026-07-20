@@ -84,7 +84,10 @@ services:
       start_period: 20s
 
   redis:
-    image: redis:7-alpine
+    # Pinned exact version: this service pulls a stock image directly (no build
+    # step), and a floating tag means production devices silently pick up new
+    # releases on redeploy.
+    image: redis:8.8.0-alpine
     restart: unless-stopped
     command: redis-server --save 300 1 --save 60 100 --appendonly no
     volumes:
@@ -94,6 +97,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      # Loading an RDB snapshot on slow (embedded) storage can exceed the plain
+      # retry window; PING returns LOADING until done, which reads as unhealthy.
+      start_period: 60s
 
   mosquitto:
     # image: eclipse-mosquitto:2

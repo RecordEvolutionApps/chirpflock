@@ -1,4 +1,4 @@
-FROM chirpstack/chirpstack:4.18.0
+FROM chirpstack/chirpstack:4.19.0
 
 USER root
 # openssl: generate the gateway CA + API secret at runtime (see entrypoint.sh).

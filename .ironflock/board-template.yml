@@ -1,26 +1,26 @@
 name: ChirpFlock
 widgets:
-  
   - layout_id: 823116a1-d080-42de-be05-891b23a3df12
     package_name: widget-embed
     version: 1.0.8
     chartconfig:
       webUrl:
         valueRef:
-          queryParams:
-            filterAnd:
-              - column: devname
-                operator: =
-                value: "1"
-                dataType: string
-                useRoute: true
-              - value: "true"
-                dataType: boolean
-                column: latest_flag
-                operator: =
-            limit: 1
           tablename: devices
           column: url
+          queryParams:
+            filterAnd:
+              - dataType: string
+                useRoute: true
+                column: devname
+                operator: =
+                value: "1"
+              - value: ""
+                dataType: boolean
+                latest: true
+                column: ""
+                operator: =
+            limit: 1
       title: null
       multiEmbed: $bool:false
     custom_style: null
@@ -33,83 +33,114 @@ widgets:
       gap: $num:4
       data:
         tableRef:
+          format:
+            title: null
+            url: url
           tablename: devices
           queryParams:
             limit: 1
             filterAnd:
-              - dataType: boolean
-                column: latest_flag
-                operator: =
-                value: "true"
-          format:
-            title: null
-            url: url
+              - operator: =
+                value: ""
+                dataType: boolean
+                latest: true
+                column: ""
     custom_style: null
   - layout_id: b14fb7d0-d62a-4921-9fa7-1b452469af1c
     package_name: widget-navbar
     version: 1.0.14
     chartconfig:
-      variables: []
       style:
-        fontSize: $num:16
         fontWeight: $num:400
+        fontSize: $num:16
       navItems:
         tableRef:
-          tablename: devices
-          queryParams:
-            nowMinusPeriods: 0
-            limit: 100
-            filterAnd:
-              - operator: =
-                value: "true"
-                dataType: boolean
-                column: latest_flag
-            windowPeriod: null
-            windowLength: 5
           format:
+            trailingSlash: null
+            variables: []
             label: devname
             iconName: $str:hard_drive
             route: devname
             leadingSlash: null
-            trailingSlash: null
-            variables: []
+          tablename: devices
+          queryParams:
+            filterAnd:
+              - column: ""
+                operator: =
+                value: ""
+                dataType: boolean
+                latest: true
+            windowPeriod: null
+            windowLength: 5
+            nowMinusPeriods: 0
+            limit: 100
       route: $str:/
       leadingSlash: null
       trailingSlash: null
       title: $str:Home
+      variables: []
+    custom_style: null
+  - layout_id: b198a267-0ef2-49ef-af1a-5f2a170e06c5
+    package_name: widget-toast
+    version: 1.0.5
+    chartconfig:
+      position: $str:bottom-left
+      infoColor: "$str:"
+      warningColor: "$str:"
+      displayTime: $num:4000
+      successColor: "$str:"
+      type:
+        valueRef:
+          tablename: error-logs
+          column: level
+      errorColor: "$str:"
+      message:
+        valueRef:
+          tablename: error-logs
+          column: msg
+      maxVisible: $num:3
+      showIcon: $bool:true
+      showCloseButton: $bool:true
     custom_style: null
   - layout_id: ff38a260-f2ef-4016-9d51-19451f68e9e2
     package_name: widget-textbox
     version: 1.1.8
     chartconfig:
-      subTitle:
-        text: "$str:"
-        color: ""
       body:
+        text: "$str:"
         color: ""
         backgroundColor: ""
-        text: "$str:"
       title:
         text: $str:Pick a Node-RED server above
         color: ""
         backgroundColor: ""
+      subTitle:
+        color: ""
+        text: "$str:"
 layout:
   gridLayout:
-    - z: 999
+    - h: 5
+      id: b14fb7d0-d62a-4921-9fa7-1b452469af1c
+      x: 0
+      z: 1000
       fixedHeight: true
       y: 0
       w: 96
-      h: 5
-      id: b14fb7d0-d62a-4921-9fa7-1b452469af1c
-      x: 0
-    - y: 5
+    - x: 0
+      y: 5
       w: 96
       z: 1001
       h: 59
       id: a28045b0-36e5-4774-8746-f24d124814dd
+    - h: 17
+      z: 1002
+      id: b198a267-0ef2-49ef-af1a-5f2a170e06c5
       x: 0
+      y: 47
+      w: 50
   subRoutes:
     "*":
+      groups: []
       gridLayout:
         - h: 5
           z: 1000
@@ -118,13 +149,18 @@ layout:
           x: 0
           y: 0
           w: 96
-        - z: 1001
-          y: 5
+        - y: 5
           w: 96
           h: 59
           id: 823116a1-d080-42de-be05-891b23a3df12
           x: 0
-      groups: []
+          z: 1001
+        - z: 1002
+          id: b198a267-0ef2-49ef-af1a-5f2a170e06c5
+          x: 0
+          y: 47
+          w: 50
+          h: 17
   groups: []
 style:
   theme:

@@ -20,13 +20,13 @@ ChirpFlock is a Docker Compose bundle. The services (see `docker-compose.yml`):
 
 | Service | Purpose | Base image |
 | --- | --- | --- |
-| `chirpstack` | LoRaWAN Network Server + Web UI + REST/gRPC API | `chirpstack/chirpstack:4.18.0` |
-| `chirpstack-gateway-bridge` | Semtech UDP packet-forwarder bridge | `chirpstack/chirpstack-gateway-bridge:4.0.11` |
-| `chirpstack-gateway-bridge-basicstation` | BasicStation (CUPS / LNS) bridge | `chirpstack/chirpstack-gateway-bridge:4.0.11` |
-| `mosquitto` | MQTT broker — internal bus between ChirpStack, the gateway bridges, and `ironflock_publisher` (the source of all IronFlock data collection) | `eclipse-mosquitto:2.0.21` |
-| `postgres` | ChirpStack database (TimescaleDB extensions) | `postgres:14-alpine` |
-| `redis` | ChirpStack cache / device session store | `redis:7-alpine` |
-| `ironflock_publisher` | Subscribes to ChirpStack uplinks over MQTT and publishes them to the IronFlock fleet DB over WAMP | `python:3.12-slim` |
+| `chirpstack` | LoRaWAN Network Server + Web UI + REST/gRPC API | `chirpstack/chirpstack:4.19.0` |
+| `chirpstack-gateway-bridge` | Semtech UDP packet-forwarder bridge | `chirpstack/chirpstack-gateway-bridge:4.1.2` |
+| `chirpstack-gateway-bridge-basicstation` | BasicStation (CUPS / LNS) bridge | `chirpstack/chirpstack-gateway-bridge:4.1.2` |
+| `mosquitto` | MQTT broker — internal bus between ChirpStack, the gateway bridges, and `ironflock_publisher` (the source of all IronFlock data collection) | `eclipse-mosquitto:2.1.2-alpine` |
+| `postgres` | ChirpStack database (TimescaleDB extensions) | `postgres:14.23-alpine` |
+| `redis` | ChirpStack cache / device session store | `redis:8.8.0-alpine` |
+| `ironflock_publisher` | Subscribes to ChirpStack uplinks over MQTT and publishes them to the IronFlock fleet DB over WAMP | `python:3.13-slim` |
 
 **Data flow:** Gateway → gateway bridge → `mosquitto` → `chirpstack` (decodes, persists) → publishes the uplink event to MQTT → `ironflock_publisher` transforms it and calls `publish_to_table("sensordata", …)` against the IronFlock WAMP cluster. On startup the publisher also registers the device's remote-access URL into the `devices` table. The table schemas are defined in `.ironflock/data-template.yml`.
 
