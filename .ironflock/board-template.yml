@@ -4,25 +4,25 @@ widgets:
     package_name: widget-embed
     version: 1.0.8
     chartconfig:
+      multiEmbed: $bool:false
       webUrl:
         valueRef:
           tablename: devices
           column: url
           queryParams:
+            limit: 1
             filterAnd:
-              - useRoute: true
+              - dataType: string
+                useRoute: true
                 column: devname
                 operator: =
                 value: "1"
-                dataType: string
-              - value: ""
-                dataType: boolean
+              - dataType: boolean
                 latest: true
                 column: ""
                 operator: =
-            limit: 1
+                value: ""
       title: null
-      multiEmbed: $bool:false
     custom_style: null
   - layout_id: a28045b0-36e5-4774-8746-f24d124814dd
     package_name: widget-embed
@@ -31,18 +31,18 @@ widgets:
       gap: $num:4
       data:
         tableRef:
+          format:
+            title: null
+            url: url
           tablename: devices
           queryParams:
             limit: 1
             filterAnd:
-              - operator: =
+              - column: ""
+                operator: =
                 value: ""
                 dataType: boolean
                 latest: true
-                column: ""
-          format:
-            title: null
-            url: url
       multiEmbed: $bool:true
       title: null
     custom_style: null
@@ -50,6 +50,8 @@ widgets:
     package_name: widget-navbar
     version: 1.0.14
     chartconfig:
+      leadingSlash: null
+      trailingSlash: null
       title: $str:Home
       variables: []
       style:
@@ -69,48 +71,43 @@ widgets:
             nowMinusPeriods: 0
             limit: 100
             filterAnd:
-              - column: ""
-                operator: =
-                value: ""
+              - value: ""
                 dataType: boolean
                 latest: true
+                column: ""
+                operator: =
             windowPeriod: null
             windowLength: 5
       route: $str:/
-      leadingSlash: null
-      trailingSlash: null
     custom_style: null
   - layout_id: b198a267-0ef2-49ef-af1a-5f2a170e06c5
     package_name: widget-toast
     version: 1.0.5
     chartconfig:
-      showCloseButton: $bool:true
-      maxVisible: $num:3
-      infoColor: "$str:"
-      type:
-        valueRef:
-          tablename: error-logs
-          column: level
-      position: $str:bottom-left
       errorColor: "$str:"
-      warningColor: "$str:"
       displayTime: $num:4000
-      successColor: "$str:"
+      showCloseButton: $bool:true
       message:
         valueRef:
           tablename: error-logs
           column: msg
+      maxVisible: $num:3
+      type:
+        valueRef:
+          tablename: error-logs
+          column: level
+      warningColor: "$str:"
+      successColor: "$str:"
       showIcon: $bool:true
+      infoColor: "$str:"
+      position: $str:bottom-left
     custom_style:
-      tile_border_color: "#fff0"
       tile_background_color: "#fff0"
+      tile_border_color: "#fff0"
   - layout_id: ff38a260-f2ef-4016-9d51-19451f68e9e2
     package_name: widget-textbox
     version: 1.1.8
     chartconfig:
-      subTitle:
-        color: ""
-        text: "$str:"
       body:
         text: "$str:"
         color: ""
@@ -119,51 +116,54 @@ widgets:
         text: $str:Pick a Node-RED server above
         color: ""
         backgroundColor: ""
+      subTitle:
+        color: ""
+        text: "$str:"
 layout:
+  groups: []
   gridLayout:
-    - h: 5
-      id: b14fb7d0-d62a-4921-9fa7-1b452469af1c
-      x: 0
-      z: 1000
+    - z: 1000
       fixedHeight: true
       y: 0
       w: 96
-    - x: 0
+      h: 5
+      id: b14fb7d0-d62a-4921-9fa7-1b452469af1c
+      x: 0
+    - id: a28045b0-36e5-4774-8746-f24d124814dd
+      x: 0
       y: 5
       w: 96
       z: 1001
       h: 59
-      id: a28045b0-36e5-4774-8746-f24d124814dd
-    - h: 17
+    - w: 50
+      h: 17
       z: 1002
       id: b198a267-0ef2-49ef-af1a-5f2a170e06c5
       x: 0
       y: 47
-      w: 50
   subRoutes:
     "*":
       groups: []
       gridLayout:
-        - h: 5
+        - y: 0
+          w: 96
+          h: 5
           z: 1000
           fixedHeight: true
           id: b14fb7d0-d62a-4921-9fa7-1b452469af1c
           x: 0
-          y: 0
-          w: 96
-        - y: 5
+        - x: 0
+          z: 1001
+          y: 5
           w: 96
           h: 59
           id: 823116a1-d080-42de-be05-891b23a3df12
-          x: 0
-          z: 1001
-        - z: 1002
+        - h: 17
+          z: 1002
           id: b198a267-0ef2-49ef-af1a-5f2a170e06c5
           x: 0
           y: 47
           w: 50
-          h: 17
-  groups: []
 style:
   theme:
     theme_name: purple-passion
