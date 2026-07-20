@@ -10,11 +10,11 @@ widgets:
           column: url
           queryParams:
             filterAnd:
-              - dataType: string
-                useRoute: true
+              - useRoute: true
                 column: devname
                 operator: =
                 value: "1"
+                dataType: string
               - value: ""
                 dataType: boolean
                 latest: true
@@ -28,14 +28,9 @@ widgets:
     package_name: widget-embed
     version: 1.0.8
     chartconfig:
-      multiEmbed: $bool:true
-      title: null
       gap: $num:4
       data:
         tableRef:
-          format:
-            title: null
-            url: url
           tablename: devices
           queryParams:
             limit: 1
@@ -45,11 +40,18 @@ widgets:
                 dataType: boolean
                 latest: true
                 column: ""
+          format:
+            title: null
+            url: url
+      multiEmbed: $bool:true
+      title: null
     custom_style: null
   - layout_id: b14fb7d0-d62a-4921-9fa7-1b452469af1c
     package_name: widget-navbar
     version: 1.0.14
     chartconfig:
+      title: $str:Home
+      variables: []
       style:
         fontWeight: $num:400
         fontSize: $num:16
@@ -64,6 +66,8 @@ widgets:
             leadingSlash: null
           tablename: devices
           queryParams:
+            nowMinusPeriods: 0
+            limit: 100
             filterAnd:
               - column: ""
                 operator: =
@@ -72,40 +76,41 @@ widgets:
                 latest: true
             windowPeriod: null
             windowLength: 5
-            nowMinusPeriods: 0
-            limit: 100
       route: $str:/
       leadingSlash: null
       trailingSlash: null
-      title: $str:Home
-      variables: []
     custom_style: null
   - layout_id: b198a267-0ef2-49ef-af1a-5f2a170e06c5
     package_name: widget-toast
     version: 1.0.5
     chartconfig:
-      position: $str:bottom-left
+      showCloseButton: $bool:true
+      maxVisible: $num:3
       infoColor: "$str:"
-      warningColor: "$str:"
-      displayTime: $num:4000
-      successColor: "$str:"
       type:
         valueRef:
           tablename: error-logs
           column: level
+      position: $str:bottom-left
       errorColor: "$str:"
+      warningColor: "$str:"
+      displayTime: $num:4000
+      successColor: "$str:"
       message:
         valueRef:
           tablename: error-logs
           column: msg
-      maxVisible: $num:3
       showIcon: $bool:true
-      showCloseButton: $bool:true
-    custom_style: null
+    custom_style:
+      tile_border_color: "#fff0"
+      tile_background_color: "#fff0"
   - layout_id: ff38a260-f2ef-4016-9d51-19451f68e9e2
     package_name: widget-textbox
     version: 1.1.8
     chartconfig:
+      subTitle:
+        color: ""
+        text: "$str:"
       body:
         text: "$str:"
         color: ""
@@ -114,9 +119,6 @@ widgets:
         text: $str:Pick a Node-RED server above
         color: ""
         backgroundColor: ""
-      subTitle:
-        color: ""
-        text: "$str:"
 layout:
   gridLayout:
     - h: 5
